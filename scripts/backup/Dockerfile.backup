@@ -1,0 +1,32 @@
+# Backup service Dockerfile
+# Creates periodic backups of SQLite and uploads directories
+
+FROM alpine:3.19
+
+RUN apk add --no-cache \
+    bash \
+    sqlite \
+    tar \
+    gzip \
+    cronie \
+    tzdata
+
+# Set timezone
+ENV TZ=UTC
+
+# Create backup directories
+RUN mkdir -p /backups /app/data
+
+# Copy backup script
+COPY backup-cron.sh /usr/local/bin/backup-cron.sh
+RUN chmod +x /usr/local/bin/backup-cron.sh
+
+# Default backup schedule (can be overridden)
+ENV BACKUP_SCHEDULE="0 0 * * *"
+ENV BACKUP_RETENTION_DAYS=30
+ENV DATABASE_PROVIDER=sqlite
+ENV SQLITE_DB_PATH=/app/data/pes-engine.db
+ENV BACKUP_PATH=/backups
+
+# Start crond in foreground
+CMD ["crond", "-f", "-l", "2"]
