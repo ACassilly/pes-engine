@@ -1,0 +1,142 @@
+# PES Engine — Airgap Configuration
+# This file is loaded by the airgap module to determine which external services are available
+
+mode: airgap
+version: "1.0.0"
+updated_at: "2026-05-01"
+
+# External API availability
+external_apis:
+  competitor_scraping:
+    enabled: false
+    reason: "Airgap mode — no external network access for web scraping"
+    fallback: "manual_csv_import"
+  
+  manufacturer_spec_fetch:
+    enabled: false
+    reason: "Airgap mode — manufacturer portals not accessible"
+    fallback: "local_file_upload"
+  
+  email_service:
+    enabled: false
+    reason: "Airgap mode — SMTP not configured"
+    fallback: "local_notification_system"
+  
+  analytics_telemetry:
+    enabled: false
+    reason: "Airgap mode — no telemetry to external services"
+    fallback: "local_analytics"
+  
+  llm_generation:
+    enabled: false
+    reason: "Airgap mode — AI services not accessible"
+    fallback: "template_engine"
+  
+  cloud_storage:
+    enabled: false
+    reason: "Airgap mode — no cloud dependencies"
+    fallback: "local_file_storage"
+  
+  cdn_assets:
+    enabled: false
+    reason: "Airgap mode — all assets bundled locally"
+    fallback: "local_bundled_assets"
+
+# Allowed local APIs
+allowed_apis:
+  shopify_admin:
+    enabled: true
+    required: true
+    description: "Shopify Admin API for product sync"
+  
+  shopify_storefront:
+    enabled: true
+    required: false
+    description: "Shopify Storefront API for customer-facing data"
+  
+  shopify_graphql:
+    enabled: true
+    required: false
+    description: "Shopify GraphQL for advanced queries"
+
+# Local-only features
+local_features:
+  vendor_file_upload:
+    enabled: true
+    description: "Upload PDF/Excel/CSV pricebooks from local filesystem"
+  
+  spec_file_upload:
+    enabled: true
+    description: "Upload PDF spec sheets from local filesystem"
+  
+  competitor_csv_import:
+    enabled: true
+    description: "Import competitor data from manually collected CSV"
+  
+  manufacturer_contact_db:
+    enabled: true
+    description: "Local database of manufacturer contacts and portals"
+  
+  all_engine_modules:
+    enabled: true
+    description: "All PES Engine modules run locally"
+  
+  all_dashboard_modules:
+    enabled: true
+    description: "All admin dashboard modules available"
+  
+  theme_extensions:
+    enabled: true
+    description: "Shopify theme extensions deployed via local build"
+  
+  scheduled_jobs:
+    enabled: true
+    description: "Cron jobs run via node-cron locally"
+  
+  reports:
+    enabled: true
+    description: "PDF/CSV reports generated locally"
+
+# Data flow rules
+data_flow:
+  vendor_pricebook:
+    source: "file_upload"
+    processing: "local_parser"
+    storage: "sqlite"
+    destination: "shopify_api"
+  
+  manufacturer_specs:
+    source: "file_upload"
+    processing: "local_storage"
+    storage: "local_filesystem"
+    destination: "shopify_metafields"
+  
+  competitor_data:
+    source: "csv_import"
+    processing: "local_analysis"
+    storage: "sqlite"
+    destination: "local_reports"
+  
+  shopify_sync:
+    source: "shopify_api"
+    processing: "local_cache"
+    storage: "sqlite"
+    destination: "shopify_api"
+
+# Security settings
+security:
+  telemetry_disabled: true
+  analytics_phoning_home: false
+  auto_updates: false
+  external_cdns: false
+  self_signed_certificates: true
+  audit_logging: true
+  data_encryption: false
+  
+# Backup configuration
+backup:
+  automated: true
+  schedule: "0 0 * * *"
+  retention_days: 30
+  storage: "local_filesystem"
+  encryption: false
