@@ -1,0 +1,35 @@
+name = "spec-sheet-button"
+type = "theme"
+
+[[extensions]]
+name = "spec-sheet-button"
+handle = "spec-sheet-button"
+type = "block"
+target = "section"
+
+[extensions.settings]
+[[extensions.settings.fields]]
+key = "button_style"
+type = "select"
+name = "Button Style"
+description = "Visual style of the spec sheet buttons"
+default = "outline"
+
+[[extensions.settings.fields.options]]
+label = "Outline"
+value = "outline"
+
+[[extensions.settings.fields.options]]
+label = "Filled"
+value = "filled"
+
+[[extensions.settings.fields.options]]
+label = "Minimal"
+value = "minimal"
+
+[[extensions.settings.fields]]
+key = "open_in_new_tab"
+type = "boolean"
+name = "Open in New Tab"
+description = "Open spec sheets in a new browser tab"
+default = true

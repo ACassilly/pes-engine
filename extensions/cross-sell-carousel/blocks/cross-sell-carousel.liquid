@@ -1,0 +1,113 @@
+{% comment %}
+  PES Engine — Cross-Sell Carousel Block
+  Shopify Theme Extension Block
+  Shows "Recommended Replacement" or "You May Also Like" carousel on EOL product pages
+
+  Required metafields:
+    - lifecycle.replacement_handle (single_line_text_field)
+    - cross_sell.replacement_benefits (multi_line_text_field)
+    - cross_sell.related_handles (json)
+{% endcomment %}
+
+{% assign replacement_handle = product.metafields.lifecycle.replacement_handle %}
+{% assign replacement_benefits = product.metafields.lifecycle.replacement_benefit %}
+{% assign related_handles = product.metafields.cross_sell.related_handles %}
+{% assign eol_strategy = product.metafields.lifecycle.eol_strategy %}
+
+{% if replacement_handle != blank or related_handles != blank %}
+  <div class="pes-cross-sell-wrapper">
+    {% if eol_strategy == 'discontinued_reference' or eol_strategy == 'legacy' %}
+      <h3 class="pes-cross-sell-title">Recommended Replacement</h3>
+      <p class="pes-cross-sell-subtitle">The manufacturer recommends upgrading to this model</p>
+    {% else %}
+      <h3 class="pes-cross-sell-title">You May Also Like</h3>
+      <p class="pes-cross-sell-subtitle">Customers also viewed these products</p>
+    {% endif %}
+
+    <div class="pes-cross-sell-grid">
+      {% if replacement_handle != blank %}
+        {% assign replacement_product = all_products[replacement_handle] %}
+        {% if replacement_product != blank %}
+          <div class="pes-cross-sell-card pes-cross-sell-primary">
+            {% if replacement_product.featured_image %}
+              <a href="{{ replacement_product.url }}" class="pes-card-image-link">
+                <img src="{{ replacement_product.featured_image | image_url: width: 400 }}" 
+                     alt="{{ replacement_product.title }}" 
+                     class="pes-card-image" loading="lazy" />
+              </a>
+            {% endif %}
+            <div class="pes-card-body">
+              <span class="pes-card-badge pes-badge-replacement">Recommended</span>
+              <h4 class="pes-card-title">
+                <a href="{{ replacement_product.url }}">{{ replacement_product.title }}</a>
+              </h4>
+              <p class="pes-card-price">{{ replacement_product.price | money }}</p>
+              {% if replacement_benefits != blank %}
+                <p class="pes-card-benefits">{{ replacement_benefits }}</p>
+              {% endif %}
+              <a href="{{ replacement_product.url }}" class="pes-card-cta">
+                View Replacement →
+              </a>
+            </div>
+          </div>
+        {% endif %}
+      {% endif %}
+
+      {% if related_handles != blank %}
+        {% for handle in related_handles limit: 4 %}
+          {% assign related_product = all_products[handle] %}
+          {% if related_product != blank %}
+            <div class="pes-cross-sell-card">
+              {% if related_product.featured_image %}
+                <a href="{{ related_product.url }}" class="pes-card-image-link">
+                  <img src="{{ related_product.featured_image | image_url: width: 300 }}" 
+                       alt="{{ related_product.title }}" 
+                       class="pes-card-image" loading="lazy" />
+                </a>
+              {% endif %}
+              <div class="pes-card-body">
+                <h4 class="pes-card-title">
+                  <a href="{{ related_product.url }}">{{ related_product.title }}</a>
+                </h4>
+                <p class="pes-card-price">{{ related_product.price | money }}</p>
+                <a href="{{ related_product.url }}" class="pes-card-cta pes-card-cta-secondary">
+                  View Details →
+                </a>
+              </div>
+            </div>
+          {% endif %}
+        {% endfor %}
+      {% endif %}
+    </div>
+  </div>
+
+  <style>
+    .pes-cross-sell-wrapper { margin: 32px 0; padding: 24px 0; border-top: 1px solid #eee; }
+    .pes-cross-sell-title { font-size: 20px; font-weight: 700; margin-bottom: 4px; color: #1a1a1a; }
+    .pes-cross-sell-subtitle { font-size: 14px; color: #666; margin-bottom: 20px; }
+    .pes-cross-sell-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(220px, 1fr)); gap: 16px; }
+    .pes-cross-sell-card { border: 1px solid #e0e0e0; border-radius: 8px; overflow: hidden; background: #fff; transition: box-shadow 0.2s; }
+    .pes-cross-sell-card:hover { box-shadow: 0 4px 12px rgba(0,0,0,0.08); }
+    .pes-cross-sell-primary { border-color: #2e7d32; grid-column: span 2; }
+    .pes-card-image-link { display: block; aspect-ratio: 4/3; overflow: hidden; background: #f5f5f5; }
+    .pes-card-image { width: 100%; height: 100%; object-fit: cover; transition: transform 0.3s; }
+    .pes-cross-sell-card:hover .pes-card-image { transform: scale(1.03); }
+    .pes-card-body { padding: 16px; }
+    .pes-card-badge { display: inline-block; padding: 3px 10px; border-radius: 4px; font-size: 11px; font-weight: 700; text-transform: uppercase; margin-bottom: 8px; }
+    .pes-badge-replacement { background: #2e7d32; color: #fff; }
+    .pes-card-title { font-size: 15px; font-weight: 600; margin: 0 0 8px 0; line-height: 1.3; }
+    .pes-card-title a { color: #1a1a1a; text-decoration: none; }
+    .pes-card-title a:hover { color: #2e7d32; }
+    .pes-card-price { font-size: 16px; font-weight: 700; color: #1a1a1a; margin: 0 0 8px 0; }
+    .pes-card-benefits { font-size: 13px; color: #555; line-height: 1.5; margin: 0 0 12px 0; }
+    .pes-card-cta { display: inline-block; padding: 8px 16px; background: #2e7d32; color: #fff; text-decoration: none; border-radius: 4px; font-size: 13px; font-weight: 600; transition: background 0.2s; }
+    .pes-card-cta:hover { background: #1b5e20; }
+    .pes-card-cta-secondary { background: #f5f5f5; color: #333; border: 1px solid #ddd; }
+    .pes-card-cta-secondary:hover { background: #e0e0e0; }
+
+    @media (max-width: 640px) {
+      .pes-cross-sell-grid { grid-template-columns: 1fr 1fr; }
+      .pes-cross-sell-primary { grid-column: span 2; }
+    }
+  </style>
+{% endif %}

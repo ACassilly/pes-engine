@@ -1,0 +1,42 @@
+name = "cross-sell-carousel"
+type = "theme"
+
+[[extensions]]
+name = "cross-sell-carousel"
+handle = "cross-sell-carousel"
+type = "block"
+target = "section"
+
+[extensions.settings]
+[[extensions.settings.fields]]
+key = "max_products"
+type = "number"
+name = "Maximum Products"
+description = "Maximum number of products to show in the carousel"
+default = 4
+
+[[extensions.settings.fields]]
+key = "show_replacement_badge"
+type = "boolean"
+name = "Show Replacement Badge"
+description = "Display 'Recommended' badge on the replacement product"
+default = true
+
+[[extensions.settings.fields]]
+key = "carousel_layout"
+type = "select"
+name = "Layout"
+description = "Carousel layout style"
+default = "grid"
+
+[[extensions.settings.fields.options]]
+label = "Grid"
+value = "grid"
+
+[[extensions.settings.fields.options]]
+label = "Horizontal Scroll"
+value = "horizontal"
+
+[[extensions.settings.fields.options]]
+label = "Stacked"
+value = "stacked"

@@ -1,0 +1,63 @@
+{% comment %}
+  PES Engine — Urgency Badges Block
+  Shopify Theme Extension Block
+  Injected on product cards in collection grids
+
+  Required metafields:
+    - lifecycle.eol_strategy (single_line_text_field)
+    - inventory.quantity (number_integer)
+{% endcomment %}
+
+{% assign eol_strategy = product.metafields.lifecycle.eol_strategy %}
+{% assign inventory = product.variants.first.inventory_quantity %}
+{% assign compare_at_price = product.compare_at_price %}
+{% assign price = product.price %}
+{% assign discount_pct = 0 %}
+{% if compare_at_price > price and compare_at_price > 0 %}
+  {% assign discount_pct = compare_at_price | minus: price | times: 100 | divided_by: compare_at_price %}
+{% endif %}
+
+{% if eol_strategy == 'liquidation' %}
+  {% if inventory > 0 and inventory < 5 %}
+    <span class="pes-badge pes-badge-liquidation-urgent">🔥 Only {{ inventory }} Left</span>
+  {% elsif inventory > 0 %}
+    <span class="pes-badge pes-badge-liquidation">🔥 Limited Stock</span>
+  {% else %}
+    <span class="pes-badge pes-badge-liquidation">⚠️ Out of Stock</span>
+  {% endif %}
+{% elsif eol_strategy == 'clearance' %}
+  {% if discount_pct > 0 %}
+    <span class="pes-badge pes-badge-clearance">🏷️ {{ discount_pct }}% Off</span>
+  {% else %}
+    <span class="pes-badge pes-badge-clearance">🏷️ Clearance</span>
+  {% endif %}
+{% elsif eol_strategy == 'discontinued_reference' %}
+  <span class="pes-badge pes-badge-discontinued">⚠️ Superseded</span>
+{% elsif eol_strategy == 'legacy' %}
+  <span class="pes-badge pes-badge-legacy">📋 Special Order</span>
+{% elsif inventory > 0 and inventory < 5 %}
+  <span class="pes-badge pes-badge-low-stock">Only {{ inventory }} Left</span>
+{% elsif discount_pct > 15 %}
+  <span class="pes-badge pes-badge-sale">{{ discount_pct }}% Off</span>
+{% endif %}
+
+<style>
+  .pes-badge {
+    display: inline-block;
+    padding: 4px 10px;
+    border-radius: 4px;
+    font-size: 12px;
+    font-weight: 700;
+    line-height: 1.4;
+    letter-spacing: 0.2px;
+    text-transform: uppercase;
+    margin: 4px 2px;
+  }
+  .pes-badge-liquidation-urgent { background: #dc3545; color: #fff; }
+  .pes-badge-liquidation { background: #ffc107; color: #212529; }
+  .pes-badge-clearance { background: #17a2b8; color: #fff; }
+  .pes-badge-discontinued { background: #fd7e14; color: #fff; }
+  .pes-badge-legacy { background: #6c757d; color: #fff; }
+  .pes-badge-low-stock { background: #fff3cd; color: #856404; border: 1px solid #ffc107; }
+  .pes-badge-sale { background: #28a745; color: #fff; }
+</style>

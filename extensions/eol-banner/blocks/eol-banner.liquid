@@ -1,0 +1,141 @@
+{% comment %}
+  PES Engine — EOL Banner Block
+  Shopify Theme Extension Block
+  Injected on product pages based on lifecycle metafields
+
+  Usage: Add this block to your product template via Shopify Theme Editor
+  Required metafields:
+    - lifecycle.status (single_line_text_field)
+    - lifecycle.eol_strategy (single_line_text_field)
+    - lifecycle.replacement_handle (single_line_text_field)
+    - lifecycle.replacement_benefit (multi_line_text_field)
+    - cross_sell.html_banner (multi_line_text_field)
+{% endcomment %}
+
+{% assign lifecycle_status = product.metafields.lifecycle.status %}
+{% assign eol_strategy = product.metafields.lifecycle.eol_strategy %}
+{% assign replacement_handle = product.metafields.lifecycle.replacement_handle %}
+{% assign replacement_benefit = product.metafields.lifecycle.replacement_benefit %}
+{% assign html_banner = product.metafields.cross_sell.html_banner %}
+{% assign inventory = product.variants.first.inventory_quantity %}
+{% assign eol_message = product.metafields.lifecycle.customer_message %}
+
+{% if lifecycle_status == 'eol' or eol_strategy != blank %}
+  <div class="pes-eol-banner-wrapper" data-eol-strategy="{{ eol_strategy }}">
+    {% if html_banner != blank %}
+      {{ html_banner }}
+    {% else %}
+      {% case eol_strategy %}
+        {% when 'liquidation' %}
+          <div class="pes-eol-banner pes-eol-liquidation">
+            <div class="pes-eol-icon">🔥</div>
+            <div class="pes-eol-content">
+              <h3 class="pes-eol-title">Limited Stock — Clearance Pricing</h3>
+              <p class="pes-eol-message">
+                This product is available for a limited time at reduced pricing. 
+                Only <strong>{{ inventory }}</strong> units remain in stock.
+              </p>
+              <p class="pes-eol-urgency">Order now before it's gone!</p>
+            </div>
+          </div>
+
+        {% when 'clearance' %}
+          <div class="pes-eol-banner pes-eol-clearance">
+            <div class="pes-eol-icon">🏷️</div>
+            <div class="pes-eol-content">
+              <h3 class="pes-eol-title">Clearance Item</h3>
+              <p class="pes-eol-message">
+                This product is being cleared at a special price. 
+                Available while supplies last — no backorders.
+              </p>
+            </div>
+          </div>
+
+        {% when 'discontinued_reference' %}
+          <div class="pes-eol-banner pes-eol-discontinued">
+            <div class="pes-eol-icon">⚠️</div>
+            <div class="pes-eol-content">
+              <h3 class="pes-eol-title">Product Superseded — Newer Version Available</h3>
+              <p class="pes-eol-message">
+                The manufacturer has discontinued this model. 
+                It is available for special order or booking request only.
+              </p>
+              {% if replacement_handle != blank %}
+                <div class="pes-eol-replacement">
+                  <strong>Recommended Replacement:</strong>
+                  <a href="/products/{{ replacement_handle }}" class="pes-eol-replacement-link">
+                    View Upgraded Model →
+                  </a>
+                  {% if replacement_benefit != blank %}
+                    <p class="pes-eol-benefit">{{ replacement_benefit }}</p>
+                  {% endif %}
+                </div>
+              {% endif %}
+            </div>
+          </div>
+
+        {% when 'legacy' %}
+          <div class="pes-eol-banner pes-eol-legacy">
+            <div class="pes-eol-icon">📋</div>
+            <div class="pes-eol-content">
+              <h3 class="pes-eol-title">Legacy Product</h3>
+              <p class="pes-eol-message">
+                This product is no longer in production by the manufacturer. 
+                It is available for special order or booking request only. 
+                Contact us for availability and lead times.
+              </p>
+              {% if replacement_handle != blank %}
+                <p class="pes-eol-contact">
+                  Looking for the current version? 
+                  <a href="/products/{{ replacement_handle }}">View Replacement →</a>
+                </p>
+              {% endif %}
+            </div>
+          </div>
+
+        {% else %}
+          <div class="pes-eol-banner pes-eol-legacy">
+            <div class="pes-eol-icon">📋</div>
+            <div class="pes-eol-content">
+              <h3 class="pes-eol-title">Product Status Update</h3>
+              <p class="pes-eol-message">{{ eol_message | default: 'This product status has been updated. Please contact us for details.' }}</p>
+            </div>
+          </div>
+      {% endcase %}
+    {% endif %}
+  </div>
+
+  <style>
+    .pes-eol-banner-wrapper { margin: 0; }
+    .pes-eol-banner {
+      padding: 20px 24px;
+      border-radius: 8px;
+      margin: 16px 0;
+      display: flex;
+      gap: 16px;
+      align-items: flex-start;
+      font-family: inherit;
+    }
+    .pes-eol-liquidation { background: #fff3cd; border: 1px solid #ffc107; color: #856404; }
+    .pes-eol-clearance { background: #d1ecf1; border: 1px solid #17a2b8; color: #0c5460; }
+    .pes-eol-discontinued { background: #f8d7da; border: 1px solid #dc3545; color: #721c24; }
+    .pes-eol-legacy { background: #e2e3e5; border: 1px solid #6c757d; color: #383d41; }
+    .pes-eol-icon { font-size: 28px; line-height: 1; flex-shrink: 0; }
+    .pes-eol-content { flex: 1; }
+    .pes-eol-title { margin: 0 0 10px 0; font-size: 16px; font-weight: 700; line-height: 1.3; }
+    .pes-eol-message { margin: 0 0 12px 0; line-height: 1.6; font-size: 14px; }
+    .pes-eol-urgency { margin: 0; font-weight: 600; color: #d9534f; font-size: 14px; }
+    .pes-eol-replacement { background: rgba(255,255,255,0.6); padding: 14px 16px; border-radius: 6px; margin: 12px 0 0 0; }
+    .pes-eol-replacement-link { display: inline-block; margin: 6px 0; color: #0066cc; font-weight: 700; text-decoration: underline; font-size: 15px; }
+    .pes-eol-replacement-link:hover { color: #004499; }
+    .pes-eol-benefit { margin: 8px 0 0 0; font-style: italic; font-size: 13px; }
+    .pes-eol-contact { margin: 12px 0 0 0; font-size: 13px; }
+    .pes-eol-contact a { color: inherit; text-decoration: underline; font-weight: 600; }
+
+    @media (max-width: 640px) {
+      .pes-eol-banner { padding: 16px; gap: 12px; }
+      .pes-eol-icon { font-size: 24px; }
+      .pes-eol-title { font-size: 15px; }
+    }
+  </style>
+{% endif %}

@@ -1,0 +1,35 @@
+name = "eol-banner"
+type = "theme"
+
+[[extensions]]
+name = "eol-banner"
+handle = "eol-banner"
+type = "block"
+target = "section"
+
+[extensions.settings]
+[[extensions.settings.fields]]
+key = "show_on_eol_only"
+type = "boolean"
+name = "Show on EOL products only"
+description = "Only display the banner on products with EOL status"
+default = true
+
+[[extensions.settings.fields]]
+key = "banner_position"
+type = "select"
+name = "Banner Position"
+description = "Where to display the banner on the product page"
+default = "above_title"
+
+[[extensions.settings.fields.options]]
+label = "Above Product Title"
+value = "above_title"
+
+[[extensions.settings.fields.options]]
+label = "Below Product Title"
+value = "below_title"
+
+[[extensions.settings.fields.options]]
+label = "Above Add to Cart"
+value = "above_cart"

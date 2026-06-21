@@ -1,0 +1,90 @@
+{% comment %}
+  PES Engine — Comparison Table Block
+  Shopify Theme Extension Block
+  Shows side-by-side comparison of old vs new product on EOL pages
+
+  Required metafields:
+    - lifecycle.comparison_json (json)
+    - lifecycle.replacement_handle (single_line_text_field)
+{% endcomment %}
+
+{% assign comparison_json = product.metafields.lifecycle.comparison_json %}
+{% assign replacement_handle = product.metafields.lifecycle.replacement_handle %}
+
+{% if comparison_json != blank and replacement_handle != blank %}
+  <div class="pes-comparison-wrapper">
+    <h3 class="pes-comparison-title">Compare: {{ product.title }} vs New Generation</h3>
+
+    <div class="pes-comparison-table-responsive">
+      <table class="pes-comparison-table">
+        <thead>
+          <tr>
+            <th class="pes-feature-col">Feature</th>
+            <th class="pes-old-col">{{ product.title }}</th>
+            <th class="pes-new-col">
+              <a href="/products/{{ replacement_handle }}" class="pes-new-link">New Model →</a>
+            </th>
+          </tr>
+        </thead>
+        <tbody>
+          {% for item in comparison_json %}
+            <tr class="{% if item.improved %}pes-improved{% endif %}">
+              <td class="pes-attr">{{ item.attribute }}</td>
+              <td class="pes-old-val">{{ item.oldValue }}</td>
+              <td class="pes-new-val">{{ item.newValue }}</td>
+            </tr>
+          {% endfor %}
+        </tbody>
+      </table>
+    </div>
+
+    <div class="pes-comparison-note">
+      <p><strong>Why Upgrade?</strong></p>
+      <ul>
+        <li>✅ Latest generation technology with improved efficiency</li>
+        <li>✅ Full manufacturer warranty and support</li>
+        <li>✅ Active parts availability and service network</li>
+        <li>✅ Future firmware updates and feature enhancements</li>
+        <li>✅ Better compatibility with modern installations</li>
+      </ul>
+    </div>
+
+    <div class="pes-comparison-cta">
+      <a href="/products/{{ replacement_handle }}" class="pes-cta-button">
+        View Upgraded Replacement →
+      </a>
+    </div>
+  </div>
+
+  <style>
+    .pes-comparison-wrapper { margin: 24px 0; padding: 0; }
+    .pes-comparison-title { font-size: 18px; font-weight: 700; margin-bottom: 16px; color: #1a1a1a; }
+    .pes-comparison-table-responsive { overflow-x: auto; }
+    .pes-comparison-table { width: 100%; border-collapse: collapse; font-size: 14px; }
+    .pes-comparison-table th { background: #f5f5f5; padding: 14px 16px; text-align: left; font-weight: 700; border-bottom: 2px solid #ddd; font-size: 13px; text-transform: uppercase; letter-spacing: 0.5px; }
+    .pes-comparison-table td { padding: 12px 16px; border-bottom: 1px solid #eee; vertical-align: top; }
+    .pes-feature-col { width: 30%; }
+    .pes-old-col { background: #fff8e1; color: #7a5c00; }
+    .pes-new-col { background: #e8f5e9; }
+    .pes-new-link { color: #2e7d32; font-weight: 700; text-decoration: none; }
+    .pes-new-link:hover { text-decoration: underline; }
+    .pes-attr { font-weight: 600; color: #555; }
+    .pes-old-val { color: #666; }
+    .pes-new-val { color: #1a1a1a; font-weight: 500; }
+    .pes-improved .pes-new-val { font-weight: 700; color: #2e7d32; background: #e8f5e9; }
+    .pes-improved .pes-old-val { text-decoration: line-through; color: #999; }
+    .pes-comparison-note { margin-top: 20px; padding: 18px 20px; background: #f8f9fa; border-radius: 8px; border-left: 4px solid #2e7d32; }
+    .pes-comparison-note p { margin: 0 0 10px 0; font-weight: 600; }
+    .pes-comparison-note ul { margin: 0; padding-left: 20px; }
+    .pes-comparison-note li { margin: 6px 0; line-height: 1.5; }
+    .pes-comparison-cta { margin-top: 20px; text-align: center; }
+    .pes-cta-button { display: inline-block; padding: 14px 28px; background: #2e7d32; color: #fff; text-decoration: none; border-radius: 6px; font-weight: 700; font-size: 15px; transition: background 0.2s; }
+    .pes-cta-button:hover { background: #1b5e20; }
+
+    @media (max-width: 640px) {
+      .pes-comparison-table th, .pes-comparison-table td { padding: 10px 12px; font-size: 13px; }
+      .pes-comparison-title { font-size: 16px; }
+      .pes-cta-button { width: 100%; padding: 14px 20px; }
+    }
+  </style>
+{% endif %}

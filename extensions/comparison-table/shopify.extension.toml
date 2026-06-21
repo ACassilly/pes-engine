@@ -1,0 +1,23 @@
+name = "comparison-table"
+type = "theme"
+
+[[extensions]]
+name = "comparison-table"
+handle = "comparison-table"
+type = "block"
+target = "section"
+
+[extensions.settings]
+[[extensions.settings.fields]]
+key = "show_on_eol_only"
+type = "boolean"
+name = "Show on EOL products only"
+description = "Only display the comparison table on products with EOL status"
+default = true
+
+[[extensions.settings.fields]]
+key = "max_rows"
+type = "number"
+name = "Maximum Rows"
+description = "Maximum number of comparison rows to display"
+default = 10

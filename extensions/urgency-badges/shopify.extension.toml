@@ -1,0 +1,37 @@
+name = "urgency-badges"
+type = "theme"
+
+[[extensions]]
+name = "urgency-badges"
+handle = "urgency-badges"
+type = "block"
+target = "section"
+
+[extensions.settings]
+[[extensions.settings.fields]]
+key = "show_inventory_badge"
+type = "boolean"
+name = "Show Low Inventory Badge"
+description = "Display badge when inventory is below threshold"
+default = true
+
+[[extensions.settings.fields]]
+key = "low_inventory_threshold"
+type = "number"
+name = "Low Inventory Threshold"
+description = "Show badge when inventory is below this number"
+default = 5
+
+[[extensions.settings.fields]]
+key = "show_discount_badge"
+type = "boolean"
+name = "Show Discount Badge"
+description = "Display badge when compare-at price is higher than price"
+default = true
+
+[[extensions.settings.fields]]
+key = "show_eol_badges"
+type = "boolean"
+name = "Show EOL Badges"
+description = "Display EOL strategy badges (liquidation, clearance, etc.)"
+default = true
