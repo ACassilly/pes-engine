@@ -1,0 +1,53 @@
+vendor: default
+category: all
+strategies:
+  liquidation:
+    trigger: "inventory < 5 AND last_replenishment > 180 days"
+    message: "This product is available for a limited time at reduced pricing. Once current stock is depleted, it will no longer be available."
+    badge: "🔥 Only {inventory} Left"
+    compare_at_price: msrp
+    price: "gold_cost * 1.05"
+    max_duration_days: 90
+  
+  clearance:
+    trigger: "inventory > 5 AND discontinued_date < 365 days"
+    message: "This product is being cleared at a special price. Available while supplies last — no backorders."
+    badge: "🏷️ Clearance"
+    compare_at_price: map_price
+    price: "gold_cost * 1.08"
+    max_duration_days: 180
+  
+  discontinued_reference:
+    trigger: "replacement_available AND new_generation_exists"
+    message: "This product has been superseded by the manufacturer. The upgraded version is available below."
+    badge: "⚠️ Superseded"
+    routing: "auto_redirect_to_replacement"
+    html_banner: true
+    comparison_table: true
+    customer_actions:
+      - "View replacement product"
+      - "Contact for compatibility check"
+      - "Request special order of old model"
+  
+  legacy:
+    trigger: "no_replacement_available OR exited_brand OR manufacturer_exited"
+    message: "This product is no longer in production by the manufacturer. It is available for special order or booking request only. Contact us for availability and lead times."
+    badge: "📋 Special Order"
+    hide_from_search: false
+    allow_purchase: false
+    contact_required: true
+
+exited_brands:
+  - "LG Solar"
+  - "LG Electronics Solar"
+  - "Panasonic Solar"
+  - "Panasonic EverVolt"
+  - "Suntech"
+  - "Kyocera Solar"
+  - "Sharp Solar"
+  - "SunPower Residential"
+  - "SunPower Maxeon"
+  - "SolarWorld"
+  - "Yingli Green"
+  - "Trina Solar (TallMax/Poly)"
+  - "Hanwha Q CELLS (some lines)"

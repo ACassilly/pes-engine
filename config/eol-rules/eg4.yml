@@ -1,0 +1,64 @@
+vendor: eg4
+category: batteries
+generators:
+  - name: "PowerStation (All-in-One)"
+    eol_strategy: discontinued_reference
+    rationale: "Rapid version iterations (V1→V2)"
+  
+  - name: "LifePower4 Batteries"
+    eol_strategy: discontinued_reference
+    rationale: "V1 and V2 simultaneously listed — V1 should be marked discontinued"
+
+map_violations:
+  12kPV:
+    map_price: 2999.99
+    current_pes_price: 3999.00
+    status: "violation_above_map"
+    note: "EG4 12kPV is priced above MAP. Should be at or below $2,999.99."
+
+strategies:
+  liquidation:
+    trigger: "inventory < 5 AND last_replenishment > 90 days"
+    message: "Limited stock available at reduced pricing."
+    badge: "🔥 Only {inventory} Left"
+    price: "gold_cost * 1.05"
+  
+  clearance:
+    trigger: "inventory > 5 AND discontinued_date < 180 days"
+    message: "Clearance pricing while supplies last."
+    badge: "🏷️ Clearance"
+    price: "gold_cost * 1.08"
+  
+  discontinued_reference:
+    trigger: "v1_product AND v2_available"
+    message: "This V1 model has been superseded by the V2. The V2 offers improved BMS, better thermal management, and enhanced safety features."
+    badge: "⚠️ Superseded"
+    routing: "auto_redirect_to_v2"
+    html_banner: true
+    comparison_table: true
+    comparison_benefits:
+      - "Improved Battery Management System (BMS)"
+      - "Better thermal management and safety"
+      - "Enhanced cycle life and durability"
+      - "Full manufacturer warranty on V2"
+  
+  legacy:
+    trigger: "no_replacement_available OR obsolete_technology"
+    message: "This product is no longer in production. Available for special order only. Contact us for alternatives."
+    badge: "📋 Special Order"
+
+supersession_rules:
+  - pattern: "\\bV1\\b"
+    replacement_pattern: "\\bV2\\b"
+    confidence: high
+    note: "EG4 V1 products should always route to V2 when available"
+  
+  - pattern: "LifePower4\\s*V1"
+    replacement_pattern: "LifePower4\\s*V2"
+    confidence: high
+  
+  - pattern: "\\b12kPV\\b"
+    replacement_pattern: "\\b18kPV\\b"
+    confidence: medium
+
+exited_brands: []

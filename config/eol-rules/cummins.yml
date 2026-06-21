@@ -1,0 +1,46 @@
+vendor: cummins
+category: generators
+generators:
+  - name: "Transfer Switches"
+    eol_strategy: legacy
+    rationale: "Long lifecycle, rare obsolescence"
+  
+  - name: "Gensets"
+    eol_strategy: legacy
+    rationale: "Industrial equipment with long support windows"
+
+strategies:
+  liquidation:
+    trigger: "inventory < 5 AND last_replenishment > 180 days"
+    message: "This product is available for a limited time at reduced pricing."
+    badge: "🔥 Only {inventory} Left"
+    price: "gold_cost * 1.05"
+  
+  clearance:
+    trigger: "inventory > 5 AND discontinued_date < 365 days"
+    message: "This product is being cleared at a special price."
+    badge: "🏷️ Clearance"
+    price: "gold_cost * 1.08"
+  
+  discontinued_reference:
+    trigger: "replacement_available"
+    message: "This product has been superseded. The newer model is recommended for all new installations."
+    badge: "⚠️ Superseded"
+    routing: "special_order_or_replacement"
+  
+  legacy:
+    trigger: "no_replacement_available"
+    message: "This product is available for special order or booking request only. Contact us for lead times and compatibility."
+    badge: "📋 Special Order"
+    allow_purchase: false
+
+supersession_rules:
+  - pattern: "^RS20$"
+    replacement_pattern: "^RS30$"
+    confidence: medium
+  
+  - pattern: "^RS30$"
+    replacement_pattern: "^RS40$"
+    confidence: medium
+
+exited_brands: []

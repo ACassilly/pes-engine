@@ -1,0 +1,57 @@
+vendor: trina
+category: solar-panels
+strategies:
+  liquidation:
+    trigger: "inventory < 10 AND last_replenishment > 180 days"
+    message: "This panel is available for a limited time at reduced pricing. Once current stock is depleted, it will no longer be available."
+    badge: "🔥 Only {inventory} Left"
+    compare_at_price: msrp
+    price: "gold_cost * 1.05"
+    unit_pricing: "$/W"
+  
+  clearance:
+    trigger: "inventory > 10 AND discontinued_date < 365 days"
+    message: "This panel is being cleared at a special price. Available while supplies last — no backorders."
+    badge: "🏷️ Clearance"
+    compare_at_price: map_price
+    price: "gold_cost * 1.08"
+    unit_pricing: "$/W"
+  
+  discontinued_reference:
+    trigger: "replacement_available AND new_generation_exists"
+    message: "This panel model has been superseded by the manufacturer. The newer generation offers improved efficiency and performance."
+    badge: "⚠️ Superseded"
+    routing: "auto_redirect_to_replacement"
+    html_banner: true
+    comparison_table: true
+    comparison_benefits:
+      - "Higher power output (up to 670W)"
+      - "Better efficiency (up to 21.6%)"
+      - "Lower degradation rate"
+      - "Enhanced warranty (up to 30 years)"
+      - "Bifacial options available"
+  
+  legacy:
+    trigger: "no_replacement_available"
+    message: "This panel is no longer in production by the manufacturer. It is available for special order or booking request only. Contact us for availability and lead times."
+    badge: "📋 Special Order"
+    hide_from_search: false
+    allow_purchase: false
+
+supersession_rules:
+  - pattern: "\\bHoney\\b"
+    replacement_pattern: "\\bVertex\\b"
+    confidence: high
+    note: "Honey series superseded by Vertex series"
+  
+  - pattern: "\\bTallMax\\b"
+    replacement_pattern: "\\bVertex\\b"
+    confidence: high
+    note: "TallMax superseded by Vertex"
+  
+  - pattern: "\\bVertex\\s*S\\b"
+    replacement_pattern: "\\bVertex\\b"
+    confidence: medium
+    note: "Vertex S may be superseded by standard Vertex for residential"
+
+exited_brands: []

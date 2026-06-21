@@ -1,0 +1,58 @@
+vendor: panasonic
+category: solar-panels
+exited_brand: true
+exit_date: "2023-01-01"
+exit_reason: "Exited US residential solar panel manufacturing; EverVolt battery systems continue"
+strategies:
+  liquidation:
+    trigger: "any_inventory"
+    message: "Panasonic exited US residential solar panel manufacturing in 2023. This remaining stock is available for a limited time only."
+    badge: "🔥 Final Stock — Panasonic Exited US Solar"
+    compare_at_price: msrp
+    price: "gold_cost * 1.05"
+    unit_pricing: "$/W"
+    note: "All remaining Panasonic panel inventory is liquidation only. No new stock will be available."
+  
+  clearance:
+    trigger: "never"
+    message: "Panasonic has exited US residential solar panel manufacturing. All remaining panels are in liquidation status."
+    badge: "🏷️ Clearance"
+    note: "Not applicable for exited brands"
+  
+  discontinued_reference:
+    trigger: "never"
+    message: "Panasonic exited US residential solar panel manufacturing. No replacement panels are available from Panasonic. EverVolt battery systems continue to be available."
+    badge: "⚠️ Brand Exited US Solar"
+    note: "Not applicable — Panasonic exited US solar panel manufacturing"
+  
+  legacy:
+    trigger: "all_inventory"
+    message: "Panasonic exited US residential solar panel manufacturing in 2023. This product is available for special order or booking request only. We recommend comparable panels from Jinko, Qcells, REC, or Canadian Solar as alternatives. Panasonic EverVolt battery systems remain available. Contact us for compatibility and warranty details."
+    badge: "📋 Panasonic Exited US Solar — Special Order Only"
+    hide_from_search: false
+    allow_purchase: false
+    contact_required: true
+    replacement_vendors: ["jinko", "qcells", "canadian-solar", "rec"]
+
+exited_brand: true
+supersession_rules: []
+replacement_recommendations:
+  - old: "Panasonic EverVolt H"
+    alternatives: ["REC Alpha Pure", "Jinko Tiger Neo", "Qcells Q.PEAK DUO BLK ML-G10+"]
+  
+  - old: "Panasonic EverVolt 2"
+    alternatives: ["Jinko Tiger Neo", "Qcells Q.PEAK DUO BLK-G10+", "Canadian Solar TopHiKu"]
+  
+  - old: "Panasonic EverVolt 1"
+    alternatives: ["Jinko Cheetah", "Qcells Q.MAXX-G2", "Canadian Solar HiKu"]
+  
+  - old: "Panasonic HIT"
+    alternatives: ["REC Alpha", "Jinko Tiger Pro", "Qcells Q.PEAK DUO"]
+
+battery_note:
+  "Panasonic EverVolt battery systems continue to be manufactured and are available for purchase. This exit only affects solar panels."
+
+customer_messaging:
+  banner: "Panasonic exited US residential solar panel manufacturing in 2023. We stock comparable panel alternatives from Jinko, Qcells, REC, and Canadian Solar. Panasonic EverVolt battery systems remain available. Contact us for assistance."
+  warranty_note: "Panasonic's existing warranty commitments for solar panels remain valid. However, future warranty claims may experience delays. EverVolt battery warranties are unaffected."
+  compatibility_note: "Panasonic panels can be mixed with other brands in the same system. Our team can verify compatibility with your existing inverter and racking configuration."

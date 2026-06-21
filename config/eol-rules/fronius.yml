@@ -1,0 +1,49 @@
+vendor: fronius
+category: inverters
+strategies:
+  liquidation:
+    trigger: "inventory < 5 AND last_replenishment > 180 days"
+    message: "This product is available for a limited time at reduced pricing. Once current stock is depleted, it will no longer be available."
+    badge: "🔥 Only {inventory} Left"
+    compare_at_price: msrp
+    price: "gold_cost * 1.05"
+  
+  clearance:
+    trigger: "inventory > 5 AND discontinued_date < 365 days"
+    message: "This product is being cleared at a special price. Available while supplies last — no backorders."
+    badge: "🏷️ Clearance"
+    compare_at_price: map_price
+    price: "gold_cost * 1.08"
+  
+  discontinued_reference:
+    trigger: "replacement_available AND new_generation_exists"
+    message: "The manufacturer has discontinued this model. It is available for special order or booking request only. See the upgraded version below."
+    badge: "⚠️ Superseded"
+    routing: "auto_redirect_to_replacement"
+    html_banner: true
+    comparison_table: true
+    comparison_benefits:
+      - "Next-generation inverter technology"
+      - "Improved efficiency and power density"
+      - "Enhanced monitoring and connectivity"
+      - "Better warranty coverage"
+  
+  legacy:
+    trigger: "no_replacement_available OR exited_brand"
+    message: "This product is no longer in production by the manufacturer. It is available for special order or booking request only. Contact us for availability and lead times."
+    badge: "📋 Special Order"
+    hide_from_search: false
+    allow_purchase: false
+
+supersession_rules:
+  - pattern: "\\bGalvo\\b"
+    replacement_pattern: "\\bPrimo\\b"
+    confidence: high
+    note: "Galvo series superseded by Primo"
+  
+  - pattern: "\\bPrimo\\b"
+    replacement_pattern: "\\bSymo\\b"
+    confidence: medium
+    note: "Primo single-phase may be superseded by newer Symo or Gen 24 models"
+
+exited_brands: []

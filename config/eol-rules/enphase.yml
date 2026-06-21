@@ -1,0 +1,37 @@
+vendor: enphase
+category: inverters
+strategies:
+  liquidation:
+    trigger: "inventory < 5"
+    message: "Limited stock available."
+    badge: "🔥 Only {inventory} Left"
+    price: "gold_cost * 1.05"
+  
+  discontinued_reference:
+    trigger: "iq7_product AND iq8_available"
+    message: "IQ7 has been superseded by IQ8 with grid-forming capability and sunlight backup support. IQ8 offers higher efficiency and better grid resilience."
+    badge: "⚠️ Upgraded to IQ8"
+    routing: "auto_redirect_to_iq8"
+    html_banner: true
+    comparison_table: true
+    comparison_benefits:
+      - "Grid-forming capability (microgrid)"
+      - "Sunlight backup during grid outages"
+      - "Higher efficiency and power output"
+      - "Better grid resilience and compliance"
+  
+  legacy:
+    trigger: "no_replacement_available"
+    message: "This product is no longer in production. Contact us for current alternatives."
+    badge: "📋 Special Order"
+
+supersession_rules:
+  - pattern: "\\bIQ7\\b"
+    replacement_pattern: "\\bIQ8\\b"
+    confidence: high
+  
+  - pattern: "\\bM215\\b"
+    replacement_pattern: "\\bM250\\b"
+    confidence: high
+
+exited_brands: []

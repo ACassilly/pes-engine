@@ -1,0 +1,55 @@
+vendor: lg-solar
+category: solar-panels
+exited_brand: true
+exit_date: "2022-01-01"
+exit_reason: "Company exited solar panel market to focus on other business lines"
+strategies:
+  liquidation:
+    trigger: "any_inventory"
+    message: "LG exited the solar panel market in 2022. This remaining stock is available for a limited time only. Once depleted, LG panels will no longer be available."
+    badge: "🔥 Final Stock — LG Exited Solar"
+    compare_at_price: msrp
+    price: "gold_cost * 1.05"
+    unit_pricing: "$/W"
+    note: "All remaining LG Solar inventory is liquidation only. No new stock will be available."
+  
+  clearance:
+    trigger: "never"
+    message: "LG Solar has exited the market. All remaining panels are in liquidation status."
+    badge: "🏷️ Clearance"
+    note: "Not applicable for exited brands"
+  
+  discontinued_reference:
+    trigger: "never"
+    message: "LG Solar has exited the market. No replacement models are available from LG."
+    badge: "⚠️ Brand Exited Market"
+    note: "Not applicable — LG fully exited solar panel manufacturing"
+  
+  legacy:
+    trigger: "all_inventory"
+    message: "LG Solar exited the solar panel market in 2022. This product is available for special order or booking request only. We recommend comparable panels from Jinko, Qcells, or Canadian Solar as alternatives. Contact us for compatibility and warranty details."
+    badge: "📋 LG Exited Solar — Special Order Only"
+    hide_from_search: false
+    allow_purchase: false
+    contact_required: true
+    replacement_vendors: ["jinko", "qcells", "canadian-solar", "rec"]
+
+exited_brand: true
+supersession_rules: []
+replacement_recommendations:
+  - old: "LG NeON R"
+    alternatives: ["REC Alpha Pure", "Jinko Tiger Neo", "Qcells Q.PEAK DUO BLK ML-G10+"]
+  
+  - old: "LG NeON 2"
+    alternatives: ["Jinko Tiger Neo", "Qcells Q.PEAK DUO BLK-G10+", "Canadian Solar HiKu"]
+  
+  - old: "LG NeON H"
+    alternatives: ["REC Alpha Pure", "Jinko Tiger Neo", "Trina Vertex"]
+  
+  - old: "LG Mono X"
+    alternatives: ["Jinko Cheetah", "Qcells Q.MAXX-G2", "Canadian Solar KuMax"]
+
+customer_messaging:
+  banner: "LG Solar exited the solar panel market in 2022. We stock comparable alternatives from Jinko, Qcells, REC, and Canadian Solar. Contact us for assistance selecting the right replacement panel."
+  warranty_note: "LG's existing warranty commitments remain valid. However, future warranty claims may experience delays due to the company's exit from the solar business."
+  compatibility_note: "LG panels can be mixed with other brands in the same system. Our team can verify compatibility with your existing inverter and racking configuration."

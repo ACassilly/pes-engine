@@ -1,0 +1,54 @@
+vendor: victron
+category: inverters
+strategies:
+  liquidation:
+    trigger: "inventory < 5 AND last_replenishment > 180 days"
+    message: "This product is available for a limited time at reduced pricing. Once current stock is depleted, it will no longer be available."
+    badge: "🔥 Only {inventory} Left"
+    compare_at_price: msrp
+    price: "gold_cost * 1.05"
+  
+  clearance:
+    trigger: "inventory > 5 AND discontinued_date < 365 days"
+    message: "This product is being cleared at a special price. Available while supplies last — no backorders."
+    badge: "🏷️ Clearance"
+    compare_at_price: map_price
+    price: "gold_cost * 1.08"
+  
+  discontinued_reference:
+    trigger: "replacement_available AND new_generation_exists"
+    message: "The manufacturer has discontinued this model. It is available for special order or booking request only. See the upgraded version below."
+    badge: "⚠️ Superseded"
+    routing: "auto_redirect_to_replacement"
+    html_banner: true
+    comparison_table: true
+    comparison_benefits:
+      - "VictronConnect app integration"
+      - "ESS (Energy Storage System) ready"
+      - "PowerAssist and PowerControl"
+      - "Generator auto-start functionality"
+  
+  legacy:
+    trigger: "no_replacement_available"
+    message: "This product is no longer in production by the manufacturer. It is available for special order or booking request only. Contact us for availability and lead times."
+    badge: "📋 Special Order"
+    hide_from_search: false
+    allow_purchase: false
+
+supersession_rules:
+  - pattern: "\\bMultiPlus\\s*1\\b"
+    replacement_pattern: "\\bMultiPlus\\s*2\\b"
+    confidence: high
+    note: "MultiPlus 1 superseded by MultiPlus 2 with GX"
+  
+  - pattern: "\\bQuattro\\s*1\\b"
+    replacement_pattern: "\\bQuattro\\s*2\\b"
+    confidence: high
+    note: "Quattro 1 superseded by Quattro 2 with GX"
+  
+  - pattern: "\\bBlueSolar\\b"
+    replacement_pattern: "\\bSmartSolar\\b"
+    confidence: high
+    note: "BlueSolar charge controllers superseded by SmartSolar with Bluetooth"
+
+exited_brands: []
