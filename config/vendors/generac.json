@@ -1,0 +1,67 @@
+{
+  "vendor": {
+    "code": "generac",
+    "name": "Generac Power Systems",
+    "displayName": "Generac",
+    "portalUrl": "https://www.generac.com/whs-gold",
+    "contact": {
+      "primaryRep": "Jennifer Weiss / Spencer Warmuth",
+      "email": "",
+      "phone": "",
+      "accountNumber": ""
+    },
+    "pricing": {
+      "goldSheet": "WHS Gold",
+      "effectiveDate": "2026-05-01",
+      "columns": {
+        "partNumber": "Part Number",
+        "description": "Description",
+        "materialCost": "Material Cost",
+        "mapPrice": "MAP Price",
+        "msrp": "MSRP",
+        "majorSection": "Major Section",
+        "subSection": "Sub Section"
+      },
+      "standardMargin": 15.8,
+      "pricingStrategy": "msrp",
+      "mapPolicy": "strict"
+    },
+    "catalog": {
+      "totalProducts": 625,
+      "sections": [
+        "Air-Cooled Generators",
+        "Liquid-Cooled Generators",
+        "Transfer Switches",
+        "Generator Pads",
+        "Maintenance Kits",
+        "Cold Weather Kits",
+        "Battery Warmers",
+        "Monitoring Systems",
+        "Controllers",
+        "Parts & Accessories"
+      ],
+      "eolPatterns": {
+        "pre2013": "^[4-9]\\d{3}-\\d$",
+        "generationIndicator": "\\bGen\\s*\\d\\b|\\bV\\d\\b",
+        "discontinued": "discontinued|obsolete|eol|end of life"
+      },
+      "supersessionRules": {
+        "singlePhase": {
+          "pre2013": "4-digit-0",
+          "post2013": "5-digit-0",
+          "example": "5871-0 → 6437-0"
+        },
+        "threePhase": {
+          "pre2013": "4-digit-1",
+          "post2013": "5-digit-1",
+          "example": "5875-1 → 6462-1"
+        }
+      }
+    },
+    "specSheets": {
+      "datasheetUrl": "https://www.generac.com/specs",
+      "manualUrl": "https://www.generac.com/manuals",
+      "warrantyUrl": "https://www.generac.com/warranty"
+    }
+  }
+}

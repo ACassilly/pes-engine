@@ -1,0 +1,43 @@
+{
+  "vendor": {
+    "code": "sol-ark",
+    "name": "Sol-Ark",
+    "displayName": "Sol-Ark",
+    "portalUrl": "https://www.sol-ark.com",
+    "contact": {
+      "primaryRep": "",
+      "email": "",
+      "phone": "",
+      "accountNumber": ""
+    },
+    "pricing": {
+      "priceSheet": "Dealer Price List",
+      "effectiveDate": "2026-05-01",
+      "columns": {
+        "partNumber": "Part Number",
+        "description": "Description",
+        "price": "Price"
+      },
+      "standardMargin": 15.8,
+      "pricingStrategy": "map",
+      "mapPolicy": "strict"
+    },
+    "catalog": {
+      "productLines": [
+        "SA Series Inverters (SA-5K, SA-8K, SA-12K, SA-15K)",
+        "Battery Systems",
+        "Charge Controllers",
+        "Accessories"
+      ],
+      "eolPatterns": {
+        "saSeries": "\\bSA-\\d+K\\b",
+        "discontinued": "discontinued|obsolete|eol|end of life"
+      }
+    },
+    "specSheets": {
+      "datasheetUrl": "https://www.sol-ark.com/specs",
+      "manualUrl": "https://www.sol-ark.com/manuals",
+      "warrantyUrl": "https://www.sol-ark.com/warranty"
+    }
+  }
+}

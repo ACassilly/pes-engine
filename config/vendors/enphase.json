@@ -1,0 +1,58 @@
+{
+  "vendor": {
+    "code": "enphase",
+    "name": "Enphase Energy",
+    "displayName": "Enphase",
+    "portalUrl": "https://www.enphase.com/partner-portal",
+    "contact": {
+      "primaryRep": "",
+      "email": "",
+      "phone": "",
+      "accountNumber": ""
+    },
+    "pricing": {
+      "priceSheet": "Partner Price List",
+      "effectiveDate": "2026-05-01",
+      "columns": {
+        "partNumber": "Part Number",
+        "description": "Description",
+        "price": "Price"
+      },
+      "standardMargin": 15.8,
+      "pricingStrategy": "map",
+      "mapPolicy": "strict"
+    },
+    "catalog": {
+      "productLines": [
+        "IQ Microinverters (IQ7, IQ8)",
+        "IQ Envoy",
+        "IQ Battery",
+        "IQ Combiner",
+        "Accessories"
+      ],
+      "eolPatterns": {
+        "iq7": "\\bIQ7\\b",
+        "iq8": "\\bIQ8\\b",
+        "m215": "\\bM215\\b",
+        "m250": "\\bM250\\b"
+      },
+      "supersessionRules": {
+        "iq7ToIq8": {
+          "old": "\\bIQ7\\b",
+          "new": "\\bIQ8\\b",
+          "strategy": "discontinued_reference"
+        },
+        "m215ToM250": {
+          "old": "\\bM215\\b",
+          "new": "\\bM250\\b",
+          "strategy": "discontinued_reference"
+        }
+      }
+    },
+    "specSheets": {
+      "datasheetUrl": "https://www.enphase.com/specs",
+      "manualUrl": "https://www.enphase.com/manuals",
+      "warrantyUrl": "https://www.enphase.com/warranty"
+    }
+  }
+}

@@ -1,0 +1,48 @@
+{
+  "vendor": {
+    "code": "jinko",
+    "name": "Jinko Solar",
+    "displayName": "Jinko",
+    "portalUrl": "https://www.jinkosolar.com",
+    "contact": {
+      "primaryRep": "",
+      "email": "",
+      "phone": "",
+      "accountNumber": ""
+    },
+    "pricing": {
+      "priceSheet": "Dealer Price List",
+      "effectiveDate": "2026-05-01",
+      "columns": {
+        "partNumber": "Part Number",
+        "description": "Description",
+        "price": "Price"
+      },
+      "standardMargin": 15.8,
+      "pricingStrategy": "map",
+      "mapPolicy": "strict"
+    },
+    "catalog": {
+      "productLines": [
+        "Tiger Neo Series",
+        "Tiger Pro Series",
+        "Cheetah Series",
+        "Eagle Series",
+        "Bifacial Modules",
+        "Monofacial Modules"
+      ],
+      "eolPatterns": {
+        "tigerNeo": "\\bTiger\\s*Neo\\b",
+        "tigerPro": "\\bTiger\\s*Pro\\b",
+        "cheetah": "\\bCheetah\\b",
+        "eagle": "\\bEagle\\b",
+        "discontinued": "discontinued|obsolete|eol|end of life"
+      }
+    },
+    "specSheets": {
+      "datasheetUrl": "https://www.jinkosolar.com/specs",
+      "manualUrl": "https://www.jinkosolar.com/manuals",
+      "warrantyUrl": "https://www.jinkosolar.com/warranty"
+    }
+  }
+}

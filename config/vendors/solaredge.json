@@ -1,0 +1,44 @@
+{
+  "vendor": {
+    "code": "solaredge",
+    "name": "SolarEdge Technologies",
+    "displayName": "SolarEdge",
+    "portalUrl": "https://www.solaredge.com/monitoring",
+    "contact": {
+      "primaryRep": "",
+      "email": "",
+      "phone": "",
+      "accountNumber": ""
+    },
+    "pricing": {
+      "priceSheet": "Dealer Price List",
+      "effectiveDate": "2026-05-01",
+      "columns": {
+        "partNumber": "Part Number",
+        "description": "Description",
+        "price": "Price"
+      },
+      "standardMargin": 15.8,
+      "pricingStrategy": "map",
+      "mapPolicy": "strict"
+    },
+    "catalog": {
+      "productLines": [
+        "Inverters",
+        "Power Optimizers",
+        "Monitoring",
+        "Accessories"
+      ],
+      "eolPatterns": {
+        "hdWave": "HD-Wave",
+        "seInverter": "^SE-\\d+",
+        "discontinued": "discontinued|obsolete|eol|end of life"
+      }
+    },
+    "specSheets": {
+      "datasheetUrl": "https://www.solaredge.com/specs",
+      "manualUrl": "https://www.solaredge.com/manuals",
+      "warrantyUrl": "https://www.solaredge.com/warranty"
+    }
+  }
+}

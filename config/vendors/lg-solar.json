@@ -1,0 +1,49 @@
+{
+  "vendor": {
+    "code": "lg-solar",
+    "name": "LG Solar",
+    "displayName": "LG Solar",
+    "portalUrl": "https://www.lg.com/us/solar",
+    "contact": {
+      "primaryRep": "",
+      "email": "",
+      "phone": "",
+      "accountNumber": ""
+    },
+    "pricing": {
+      "priceSheet": "Dealer Price List",
+      "effectiveDate": "2026-05-01",
+      "columns": {
+        "partNumber": "Part Number",
+        "description": "Description",
+        "price": "Price"
+      },
+      "standardMargin": 15.8,
+      "pricingStrategy": "map",
+      "mapPolicy": "strict"
+    },
+    "catalog": {
+      "productLines": [
+        "NeON R Series",
+        "NeON 2 Series",
+        "NeON H Series",
+        "Mono X Series"
+      ],
+      "eolPatterns": {
+        "neonR": "\\bNeON\\s*R\\b",
+        "neon2": "\\bNeON\\s*2\\b",
+        "neonH": "\\bNeON\\s*H\\b",
+        "monoX": "\\bMono\\s*X\\b",
+        "discontinued": "discontinued|obsolete|eol|end of life"
+      },
+      "note": "LG Solar exited the solar panel market in 2022. All remaining stock is legacy/special order only."
+    },
+    "specSheets": {
+      "datasheetUrl": "https://www.lg.com/us/solar/specs",
+      "manualUrl": "https://www.lg.com/us/solar/manuals",
+      "warrantyUrl": "https://www.lg.com/us/solar/warranty"
+    },
+    "exitedBrand": true,
+    "exitDate": "2022-01-01"
+  }
+}

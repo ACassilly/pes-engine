@@ -1,0 +1,62 @@
+{
+  "vendor": {
+    "code": "victron",
+    "name": "Victron Energy",
+    "displayName": "Victron",
+    "portalUrl": "https://www.victronenergy.com",
+    "contact": {
+      "primaryRep": "",
+      "email": "",
+      "phone": "",
+      "accountNumber": ""
+    },
+    "pricing": {
+      "priceSheet": "Dealer Price List",
+      "effectiveDate": "2026-05-01",
+      "columns": {
+        "partNumber": "Part Number",
+        "description": "Description",
+        "price": "Price"
+      },
+      "standardMargin": 15.8,
+      "pricingStrategy": "map",
+      "mapPolicy": "strict"
+    },
+    "catalog": {
+      "productLines": [
+        "MultiPlus Inverters",
+        "Quattro Inverters",
+        "MPPT Solar Charge Controllers",
+        "SmartSolar",
+        "BlueSolar",
+        "Battery Monitors",
+        "Cerbo GX",
+        "VictronConnect",
+        "Accessories"
+      ],
+      "eolPatterns": {
+        "multiplus": "\\bMultiPlus\\b",
+        "quattro": "\\bQuattro\\b",
+        "mppt": "\\bMPPT\\b",
+        "discontinued": "discontinued|obsolete|eol|end of life"
+      },
+      "supersessionRules": {
+        "multiplus1To2": {
+          "old": "\\bMultiPlus\\s*1\\b",
+          "new": "\\bMultiPlus\\s*2\\b",
+          "strategy": "discontinued_reference"
+        },
+        "quattro1To2": {
+          "old": "\\bQuattro\\s*1\\b",
+          "new": "\\bQuattro\\s*2\\b",
+          "strategy": "discontinued_reference"
+        }
+      }
+    },
+    "specSheets": {
+      "datasheetUrl": "https://www.victronenergy.com/specs",
+      "manualUrl": "https://www.victronenergy.com/manuals",
+      "warrantyUrl": "https://www.victronenergy.com/warranty"
+    }
+  }
+}

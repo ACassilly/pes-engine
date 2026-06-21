@@ -1,0 +1,49 @@
+{
+  "vendor": {
+    "code": "cummins",
+    "name": "Cummins Inc.",
+    "displayName": "Cummins",
+    "portalUrl": "https://www.cummins.com/dealer-portal",
+    "contact": {
+      "primaryRep": "Jaime Gilmore",
+      "email": "",
+      "phone": "",
+      "accountNumber": ""
+    },
+    "pricing": {
+      "atsSheet": "ATS Price Sheet",
+      "gensetSheet": "Genset Price Sheet",
+      "effectiveDate": "2026-05-01",
+      "columns": {
+        "partNumber": "Part #",
+        "description": "Description",
+        "price": "Price",
+        "warranty": "Warranty",
+        "dimensions": "Dimensions",
+        "weight": "Weight"
+      },
+      "standardMargin": 15.8,
+      "pricingStrategy": "cost_plus",
+      "mapPolicy": "none"
+    },
+    "catalog": {
+      "atsProducts": 23,
+      "gensetProducts": 33,
+      "sections": [
+        "Transfer Switches",
+        "Gensets",
+        "Parts & Accessories"
+      ],
+      "eolPatterns": {
+        "rsSeries": "^RS\\d+$",
+        "quietConnect": "QuietConnect",
+        "discontinued": "discontinued|obsolete|eol|end of life"
+      }
+    },
+    "specSheets": {
+      "datasheetUrl": "https://www.cummins.com/specs",
+      "manualUrl": "https://www.cummins.com/manuals",
+      "warrantyUrl": "https://www.cummins.com/warranty"
+    }
+  }
+}

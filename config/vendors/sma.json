@@ -1,0 +1,53 @@
+{
+  "vendor": {
+    "code": "sma",
+    "name": "SMA Solar Technology",
+    "displayName": "SMA",
+    "portalUrl": "https://www.sma-america.com",
+    "contact": {
+      "primaryRep": "",
+      "email": "",
+      "phone": "",
+      "accountNumber": ""
+    },
+    "pricing": {
+      "priceSheet": "Dealer Price List",
+      "effectiveDate": "2026-05-01",
+      "columns": {
+        "partNumber": "Part Number",
+        "description": "Description",
+        "price": "Price"
+      },
+      "standardMargin": 15.8,
+      "pricingStrategy": "map",
+      "mapPolicy": "strict"
+    },
+    "catalog": {
+      "productLines": [
+        "Sunny Boy Inverters",
+        "Sunny Tripower Inverters",
+        "Sunny Central Inverters",
+        "Accessories"
+      ],
+      "eolPatterns": {
+        "sunnyBoy": "Sunny\\s*Boy",
+        "sunnyTripower": "Sunny\\s*Tripower",
+        "sbx": "\\bSBx\\b",
+        "tl": "\\bTL\\b",
+        "discontinued": "discontinued|obsolete|eol|end of life"
+      },
+      "supersessionRules": {
+        "sbxToTl": {
+          "old": "\\bSBx\\b",
+          "new": "\\bTL\\b",
+          "strategy": "discontinued_reference"
+        }
+      }
+    },
+    "specSheets": {
+      "datasheetUrl": "https://www.sma-america.com/specs",
+      "manualUrl": "https://www.sma-america.com/manuals",
+      "warrantyUrl": "https://www.sma-america.com/warranty"
+    }
+  }
+}

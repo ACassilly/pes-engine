@@ -1,0 +1,46 @@
+{
+  "vendor": {
+    "code": "qcells",
+    "name": "Qcells (Hanwha Q CELLS)",
+    "displayName": "Qcells",
+    "portalUrl": "https://www.qcells.com/us",
+    "contact": {
+      "primaryRep": "",
+      "email": "",
+      "phone": "",
+      "accountNumber": ""
+    },
+    "pricing": {
+      "priceSheet": "Dealer Price List",
+      "effectiveDate": "2026-05-01",
+      "columns": {
+        "partNumber": "Part Number",
+        "description": "Description",
+        "price": "Price"
+      },
+      "standardMargin": 15.8,
+      "pricingStrategy": "map",
+      "mapPolicy": "strict"
+    },
+    "catalog": {
+      "productLines": [
+        "Q.PEAK DUO BLK ML-G10+",
+        "Q.PEAK DUO BLK-G10+",
+        "Q.PEAK DUO-G10",
+        "Q.MAXX-G2",
+        "Q.TRON Series"
+      ],
+      "eolPatterns": {
+        "qpeak": "\\bQ\\.PEAK\\b",
+        "qmaxx": "\\bQ\\.MAXX\\b",
+        "qtron": "\\bQ\\.TRON\\b",
+        "discontinued": "discontinued|obsolete|eol|end of life"
+      }
+    },
+    "specSheets": {
+      "datasheetUrl": "https://www.qcells.com/us/specs",
+      "manualUrl": "https://www.qcells.com/us/manuals",
+      "warrantyUrl": "https://www.qcells.com/us/warranty"
+    }
+  }
+}

@@ -1,0 +1,59 @@
+{
+  "vendor": {
+    "code": "fronius",
+    "name": "Fronius International",
+    "displayName": "Fronius",
+    "portalUrl": "https://www.fronius.com",
+    "contact": {
+      "primaryRep": "",
+      "email": "",
+      "phone": "",
+      "accountNumber": ""
+    },
+    "pricing": {
+      "priceSheet": "Dealer Price List",
+      "effectiveDate": "2026-05-01",
+      "columns": {
+        "partNumber": "Part Number",
+        "description": "Description",
+        "price": "Price"
+      },
+      "standardMargin": 15.8,
+      "pricingStrategy": "map",
+      "mapPolicy": "strict"
+    },
+    "catalog": {
+      "productLines": [
+        "Galvo Inverters",
+        "Primo Inverters",
+        "Symo Inverters",
+        "Ohmpilot",
+        "Smart Meter",
+        "Accessories"
+      ],
+      "eolPatterns": {
+        "galvo": "\\bGalvo\\b",
+        "primo": "\\bPrimo\\b",
+        "symo": "\\bSymo\\b",
+        "discontinued": "discontinued|obsolete|eol|end of life"
+      },
+      "supersessionRules": {
+        "galvoToPrimo": {
+          "old": "\\bGalvo\\b",
+          "new": "\\bPrimo\\b",
+          "strategy": "discontinued_reference"
+        },
+        "primoToSymo": {
+          "old": "\\bPrimo\\b",
+          "new": "\\bSymo\\b",
+          "strategy": "discontinued_reference"
+        }
+      }
+    },
+    "specSheets": {
+      "datasheetUrl": "https://www.fronius.com/specs",
+      "manualUrl": "https://www.fronius.com/manuals",
+      "warrantyUrl": "https://www.fronius.com/warranty"
+    }
+  }
+}

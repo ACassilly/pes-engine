@@ -1,0 +1,48 @@
+{
+  "vendor": {
+    "code": "canadian-solar",
+    "name": "Canadian Solar",
+    "displayName": "Canadian Solar",
+    "portalUrl": "https://www.canadiansolar.com",
+    "contact": {
+      "primaryRep": "",
+      "email": "",
+      "phone": "",
+      "accountNumber": ""
+    },
+    "pricing": {
+      "priceSheet": "Dealer Price List",
+      "effectiveDate": "2026-05-01",
+      "columns": {
+        "partNumber": "Part Number",
+        "description": "Description",
+        "price": "Price"
+      },
+      "standardMargin": 15.8,
+      "pricingStrategy": "map",
+      "mapPolicy": "strict"
+    },
+    "catalog": {
+      "productLines": [
+        "HiKu Series",
+        "BiKu Series (Bifacial)",
+        "KuMax Series",
+        "TopHiKu Series",
+        "EP Cube Energy Storage"
+      ],
+      "eolPatterns": {
+        "hiku": "\\bHiKu\\b",
+        "biku": "\\bBiKu\\b",
+        "kumax": "\\bKuMax\\b",
+        "tophiku": "\\bTopHiKu\\b",
+        "epCube": "\\bEP\\s*Cube\\b",
+        "discontinued": "discontinued|obsolete|eol|end of life"
+      }
+    },
+    "specSheets": {
+      "datasheetUrl": "https://www.canadiansolar.com/specs",
+      "manualUrl": "https://www.canadiansolar.com/manuals",
+      "warrantyUrl": "https://www.canadiansolar.com/warranty"
+    }
+  }
+}

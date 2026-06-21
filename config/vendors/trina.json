@@ -1,0 +1,46 @@
+{
+  "vendor": {
+    "code": "trina",
+    "name": "Trina Solar",
+    "displayName": "Trina",
+    "portalUrl": "https://www.trinasolar.com",
+    "contact": {
+      "primaryRep": "",
+      "email": "",
+      "phone": "",
+      "accountNumber": ""
+    },
+    "pricing": {
+      "priceSheet": "Dealer Price List",
+      "effectiveDate": "2026-05-01",
+      "columns": {
+        "partNumber": "Part Number",
+        "description": "Description",
+        "price": "Price"
+      },
+      "standardMargin": 15.8,
+      "pricingStrategy": "map",
+      "mapPolicy": "strict"
+    },
+    "catalog": {
+      "productLines": [
+        "Vertex Series",
+        "Vertex S Series",
+        "Honey Series",
+        "Bifacial Modules",
+        "Monofacial Modules"
+      ],
+      "eolPatterns": {
+        "vertex": "\\bVertex\\b",
+        "honey": "\\bHoney\\b",
+        "tallmax": "\\bTallMax\\b",
+        "discontinued": "discontinued|obsolete|eol|end of life"
+      }
+    },
+    "specSheets": {
+      "datasheetUrl": "https://www.trinasolar.com/specs",
+      "manualUrl": "https://www.trinasolar.com/manuals",
+      "warrantyUrl": "https://www.trinasolar.com/warranty"
+    }
+  }
+}

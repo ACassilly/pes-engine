@@ -1,0 +1,47 @@
+{
+  "vendor": {
+    "code": "rec",
+    "name": "REC Group",
+    "displayName": "REC",
+    "portalUrl": "https://www.rec-group.com",
+    "contact": {
+      "primaryRep": "",
+      "email": "",
+      "phone": "",
+      "accountNumber": ""
+    },
+    "pricing": {
+      "priceSheet": "Dealer Price List",
+      "effectiveDate": "2026-05-01",
+      "columns": {
+        "partNumber": "Part Number",
+        "description": "Description",
+        "price": "Price"
+      },
+      "standardMargin": 15.8,
+      "pricingStrategy": "map",
+      "mapPolicy": "strict"
+    },
+    "catalog": {
+      "productLines": [
+        "Alpha Pure Series",
+        "Alpha Series",
+        "N-Peak Series",
+        "TwinPeak Series",
+        "Pure-R Series"
+      ],
+      "eolPatterns": {
+        "alpha": "\\bAlpha\\b",
+        "npeak": "\\bN-Peak\\b",
+        "twinpeak": "\\bTwinPeak\\b",
+        "pureR": "\\bPure-R\\b",
+        "discontinued": "discontinued|obsolete|eol|end of life"
+      }
+    },
+    "specSheets": {
+      "datasheetUrl": "https://www.rec-group.com/specs",
+      "manualUrl": "https://www.rec-group.com/manuals",
+      "warrantyUrl": "https://www.rec-group.com/warranty"
+    }
+  }
+}

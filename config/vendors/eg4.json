@@ -1,0 +1,68 @@
+{
+  "vendor": {
+    "code": "eg4",
+    "name": "EG4 Electronics",
+    "displayName": "EG4",
+    "portalUrl": "https://www.eg4electronics.com/dealer",
+    "contact": {
+      "primaryRep": "Anthony Dawood",
+      "email": "",
+      "phone": "",
+      "accountNumber": ""
+    },
+    "pricing": {
+      "priceSheet": "Dealer Price Sheet",
+      "effectiveDate": "2026-05-01",
+      "columns": {
+        "model": "Model",
+        "specification": "Specification",
+        "price": "Price",
+        "mapPrice": "MAP Price",
+        "warranty": "Warranty"
+      },
+      "standardMargin": 15.8,
+      "pricingStrategy": "map",
+      "mapPolicy": "strict",
+      "mapViolations": {
+        "12kPV": {
+          "map": 2999.99,
+          "currentPESPrice": 3999.00,
+          "status": "violation_above_map"
+        }
+      }
+    },
+    "catalog": {
+      "totalProducts": 56,
+      "productLines": [
+        "PowerStation (All-in-One Inverter/Battery System)",
+        "LifePower4 Batteries",
+        "Battery Racks",
+        "Wall Mount Brackets",
+        "Controllers & Accessories"
+      ],
+      "eolPatterns": {
+        "v1Indicator": "\\bv1\\b|V1",
+        "v2Indicator": "\\bv2\\b|V2",
+        "lifePower4V1": "LifePower4\\s*V1",
+        "lifePower4V2": "LifePower4\\s*V2"
+      },
+      "supersessionRules": {
+        "lifePower4V1": {
+          "old": "LifePower4 V1",
+          "new": "LifePower4 V2",
+          "strategy": "discontinued_reference"
+        },
+        "v1ToV2": {
+          "old": "\\bv1\\b",
+          "new": "\\bv2\\b",
+          "strategy": "discontinued_reference"
+        }
+      }
+    },
+    "specSheets": {
+      "datasheetUrl": "https://www.eg4electronics.com/specs",
+      "manualUrl": "https://www.eg4electronics.com/manuals",
+      "warrantyUrl": "https://www.eg4electronics.com/warranty"
+    }
+  }
+}

@@ -1,0 +1,49 @@
+{
+  "vendor": {
+    "code": "panasonic",
+    "name": "Panasonic Solar",
+    "displayName": "Panasonic",
+    "portalUrl": "https://na.panasonic.com/us/solar",
+    "contact": {
+      "primaryRep": "",
+      "email": "",
+      "phone": "",
+      "accountNumber": ""
+    },
+    "pricing": {
+      "priceSheet": "Dealer Price List",
+      "effectiveDate": "2026-05-01",
+      "columns": {
+        "partNumber": "Part Number",
+        "description": "Description",
+        "price": "Price"
+      },
+      "standardMargin": 15.8,
+      "pricingStrategy": "map",
+      "mapPolicy": "strict"
+    },
+    "catalog": {
+      "productLines": [
+        "EverVolt H Series",
+        "EverVolt 2 Series",
+        "EverVolt 1 Series",
+        "HIT Series"
+      ],
+      "eolPatterns": {
+        "evervoltH": "\\bEverVolt\\s*H\\b",
+        "evervolt2": "\\bEverVolt\\s*2\\b",
+        "evervolt1": "\\bEverVolt\\s*1\\b",
+        "hit": "\\bHIT\\b",
+        "discontinued": "discontinued|obsolete|eol|end of life"
+      },
+      "note": "Panasonic exited US residential solar panel manufacturing. EverVolt battery systems continue."
+    },
+    "specSheets": {
+      "datasheetUrl": "https://na.panasonic.com/us/solar/specs",
+      "manualUrl": "https://na.panasonic.com/us/solar/manuals",
+      "warrantyUrl": "https://na.panasonic.com/us/solar/warranty"
+    },
+    "exitedBrand": true,
+    "exitDate": "2023-01-01"
+  }
+}
