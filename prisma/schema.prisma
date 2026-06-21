@@ -1,0 +1,748 @@
+// PES Engine — Prisma Schema
+// Unified database schema for Portlandia Electric Supply
+// Supports SQLite (default/airgap) and PostgreSQL (enterprise)
+
+// generator
+// ──────────────────────────────────────────────
+generator client {
+  provider = "prisma-client-js"
+  output   = "../node_modules/.prisma/client"
+}
+
+datasource db {
+  provider = "sqlite" // or "postgresql" for enterprise
+  url      = env("DATABASE_URL")
+}
+
+// ──────────────────────────────────────────────
+// VENDOR & CATALOG
+// ──────────────────────────────────────────────
+
+model Vendor {
+  id             String   @id @default(cuid())
+  name           String // "Generac", "Cummins", "EG4"
+  code           String   @unique // "generac", "cummins", "eg4"
+  contactName    String?
+  contactEmail   String?
+  contactPhone   String?
+  accountNumber  String?
+  portalUrl      String?
+  isActive       Boolean  @default(true)
+  pricebooks     Pricebook[]
+  products       VendorProduct[]
+  manufacturerSpecs ManufacturerSpec[]
+  createdAt      DateTime @default(now())
+  updatedAt      DateTime @updatedAt
+
+  @@index([code])
+  @@index([isActive])
+  @@map("vendors")
+}
+
+model Pricebook {
+  id             String   @id @default(cuid())
+  vendorId       String
+  vendor         Vendor   @relation(fields: [vendorId], references: [id], onDelete: Cascade)
+  effectiveDate  DateTime
+  fileName       String
+  filePath       String
+  fileSize       Int?
+  mimeType       String?
+  status         String   @default("current") // "current", "outdated", "deprecated"
+  entries        PricebookEntry[]
+  createdAt      DateTime @default(now())
+  updatedAt      DateTime @updatedAt
+
+  @@index([vendorId])
+  @@index([status])
+  @@index([effectiveDate])
+  @@map("pricebooks")
+}
+
+model PricebookEntry {
+  id             String   @id @default(cuid())
+  pricebookId    String
+  pricebook      Pricebook @relation(fields: [pricebookId], references: [id], onDelete: Cascade)
+  sku            String
+  model          String?
+  description    String?
+  goldCost       Decimal? @db.Decimal(10, 2)
+  mapPrice       Decimal? @db.Decimal(10, 2)
+  msrp           Decimal? @db.Decimal(10, 2)
+  moq            Int?
+  ean            String?
+  upc            String?
+  majorSection   String?
+  subSection     String?
+  status         String   @default("current") // "current", "deprecated"
+  createdAt      DateTime @default(now())
+  updatedAt      DateTime @updatedAt
+
+  @@index([pricebookId])
+  @@index([sku])
+  @@index([status])
+  @@map("pricebook_entries")
+}
+
+model VendorProduct {
+  id                     String   @id @default(cuid())
+  vendorId               String
+  vendor                 Vendor   @relation(fields: [vendorId], references: [id], onDelete: Cascade)
+  sku                    String
+  model                  String?
+  title                  String?
+  description            String?
+  category               String?
+  subcategory            String?
+  goldCost               Decimal? @db.Decimal(10, 2)
+  mapPrice               Decimal? @db.Decimal(10, 2)
+  msrp                   Decimal? @db.Decimal(10, 2)
+  moq                    Int?
+  ean                    String?
+  upc                    String?
+  
+  // Lifecycle
+  lifecycle              String   @default("active") // "active", "legacy", "clearance", "liquidation", "discontinued_reference"
+  eolStrategy            String?  // "liquidation", "clearance", "discontinued_reference", "legacy"
+  eolSignals             String?  // JSON array of detected signals
+  eolDetectedAt          DateTime?
+  
+  // Supersession
+  replacementId          String?
+  replacement            VendorProduct? @relation("Supersession", fields: [replacementId], references: [id])
+  replacedBy             VendorProduct[] @relation("Supersession")
+  replacementBenefit     String?
+  replacementConfidence  String?  // "high", "medium", "low", "none"
+  
+  // Content
+  htmlBanner             String?  // Auto-generated HTML banner
+  comparisonTableJson    String?  // JSON comparison table
+  customerMessage        String?  // Auto-generated customer message
+  
+  // Shopify link
+  shopifyProductId       String?
+  shopifyProductHandle   String?
+  shopifyProductTitle    String?
+  shopifyPrice           Decimal? @db.Decimal(10, 2)
+  shopifyCompareAtPrice  Decimal? @db.Decimal(10, 2)
+  shopifyStatus          String?  // "active", "draft", "archived"
+  inShopify              Boolean  @default(false)
+  lastShopifySyncAt      DateTime?
+  
+  // Specs
+  manufacturerSpecs      ManufacturerSpec[]
+  
+  // Health
+  healthIssues           HealthIssue[]
+  
+  createdAt              DateTime @default(now())
+  updatedAt              DateTime @updatedAt
+
+  @@index([vendorId])
+  @@index([sku])
+  @@index([lifecycle])
+  @@index([eolStrategy])
+  @@index([shopifyProductId])
+  @@index([inShopify])
+  @@index([replacementId])
+  @@map("vendor_products")
+}
+
+// ──────────────────────────────────────────────
+// SHOPIFY SYNC CACHE
+// ──────────────────────────────────────────────
+
+model ShopifyProduct {
+  id                  String   @id @default(cuid())
+  shopifyId           String   @unique
+  shopifyHandle       String
+  title               String
+  sku                 String?
+  vendor              String?
+  price               Decimal? @db.Decimal(10, 2)
+  compareAtPrice      Decimal? @db.Decimal(10, 2)
+  productType         String?
+  tags                String?
+  description         String?
+  status              String?  // "active", "draft", "archived"
+  images              String?  // JSON array of image URLs
+  imageCount          Int?
+  metafields          String?  // JSON object
+  
+  // Lifecycle tracking
+  lifecycleStatus     String?  @default("active")
+  eolStrategy         String?
+  
+  // Health
+  healthIssues        HealthIssue[]
+  
+  // Analytics
+  lastSyncAt          DateTime @default(now())
+  syncVersion         Int      @default(1)
+  
+  createdAt           DateTime @default(now())
+  updatedAt           DateTime @updatedAt
+
+  @@index([shopifyId])
+  @@index([sku])
+  @@index([vendor])
+  @@index([status])
+  @@index([lifecycleStatus])
+  @@map("shopify_products")
+}
+
+// ──────────────────────────────────────────────
+// EOL & SUPERSESSION
+// ──────────────────────────────────────────────
+
+model EolMapping {
+  id                  String   @id @default(cuid())
+  oldModel            String
+  oldSku              String?
+  oldTitle            String?
+  oldCategory         String?
+  oldSubcategory      String?
+  
+  newModel            String
+  newSku              String?
+  newTitle            String?
+  newCategory         String?
+  
+  upgradeBenefit      String
+  upgradeBenefits     String?  // JSON array of additional benefits
+  eolStrategy         String   // "liquidation", "clearance", "discontinued_reference", "legacy"
+  customerMessage     String
+  confidence          String   // "high", "medium", "low"
+  
+  category            String   // "generators", "inverters", "batteries", etc.
+  subcategory         String?
+  vendor              String   // "generac", "cummins", "eg4", "enphase", etc.
+  era                 String?  // "pre-2013", "2013-2018", "2018-2024", "2024-present"
+  
+  // Content templates
+  htmlBannerTemplate  String?
+  comparisonTemplate  String?
+  
+  isActive            Boolean  @default(true)
+  isAutoGenerated     Boolean  @default(false)
+  reviewedBy          String?
+  reviewedAt          DateTime?
+  
+  createdAt           DateTime @default(now())
+  updatedAt           DateTime @updatedAt
+
+  @@index([oldModel])
+  @@index([newModel])
+  @@index([category])
+  @@index([vendor])
+  @@index([eolStrategy])
+  @@index([confidence])
+  @@index([isActive])
+  @@map("eol_mappings")
+}
+
+// ──────────────────────────────────────────────
+// COMPETITOR INTELLIGENCE
+// ──────────────────────────────────────────────
+
+model Competitor {
+  id             String   @id @default(cuid())
+  name           String   // "a1solarstore", "ussolarsupplier", "altestore", "wholesalesolar", "signaturesolar"
+  displayName    String?
+  url            String?
+  logoUrl        String?
+  isActive       Boolean  @default(true)
+  lastCrawlAt    DateTime?
+  crawlStatus    String   @default("idle") // "idle", "running", "success", "error"
+  crawlError     String?
+  products       CompetitorProduct[]
+  createdAt      DateTime @default(now())
+  updatedAt      DateTime @updatedAt
+
+  @@index([name])
+  @@index([isActive])
+  @@map("competitors")
+}
+
+model CompetitorProduct {
+  id             String   @id @default(cuid())
+  competitorId   String
+  competitor     Competitor @relation(fields: [competitorId], references: [id], onDelete: Cascade)
+  
+  sku            String?
+  mpn            String?  // Manufacturer Part Number
+  upc            String?
+  ean            String?
+  title          String
+  description    String?
+  brand          String?
+  category       String?
+  subcategory    String?
+  
+  url            String?
+  imageUrl       String?
+  
+  price          Decimal? @db.Decimal(10, 2)
+  compareAtPrice Decimal? @db.Decimal(10, 2)
+  currency       String   @default("USD")
+  availability   String?  // "in_stock", "out_of_stock", "pre_order", "back_order"
+  
+  // PES matching
+  pesProductId   String?  // Linked PES vendor product
+  matchConfidence String?  // "high", "medium", "low"
+  matchMethod    String?  // "sku", "mpn", "title", "manual"
+  
+  // Price history (JSON array of {date, price, currency})
+  priceHistory   String?
+  
+  lastSeenAt     DateTime @default(now())
+  firstSeenAt    DateTime @default(now())
+  isActive       Boolean  @default(true)
+  createdAt      DateTime @default(now())
+  updatedAt      DateTime @updatedAt
+
+  @@index([competitorId])
+  @@index([sku])
+  @@index([mpn])
+  @@index([pesProductId])
+  @@index([isActive])
+  @@map("competitor_products")
+}
+
+// ──────────────────────────────────────────────
+// MANUFACTURER SPEC SHEETS
+// ──────────────────────────────────────────────
+
+model ManufacturerSpec {
+  id             String   @id @default(cuid())
+  vendorId       String?
+  vendor         Vendor?  @relation(fields: [vendorId], references: [id], onDelete: SetNull)
+  productId      String?
+  product        VendorProduct? @relation(fields: [productId], references: [id], onDelete: SetNull)
+  
+  sku            String?
+  model          String?
+  specType       String   // "datasheet", "manual", "warranty", "installation", "quick_start", "certification", "neima_ul", "brochure"
+  title          String
+  description    String?
+  
+  filePath       String?  // Local file path
+  fileName       String?
+  fileSize       Int?
+  mimeType       String?
+  isLocal        Boolean  @default(false)
+  
+  url            String?  // External URL (if not local)
+  
+  // Metadata extraction
+  pageCount      Int?
+  extractedText  String?  // OCR or PDF text extraction
+  extractedMetadata String? // JSON of extracted metadata
+  
+  uploadedAt     DateTime @default(now())
+  createdAt      DateTime @default(now())
+  updatedAt      DateTime @updatedAt
+
+  @@index([vendorId])
+  @@index([productId])
+  @@index([sku])
+  @@index([specType])
+  @@index([isLocal])
+  @@map("manufacturer_specs")
+}
+
+// ──────────────────────────────────────────────
+// CATALOG HEALTH ISSUES
+// ──────────────────────────────────────────────
+
+model HealthIssue {
+  id                  String   @id @default(cuid())
+  
+  // Can reference either Shopify or Vendor product
+  shopifyProductId    String?
+  shopifyProduct      ShopifyProduct? @relation(fields: [shopifyProductId], references: [id], onDelete: SetNull)
+  vendorProductId     String?
+  vendorProduct       VendorProduct? @relation(fields: [vendorProductId], references: [id], onDelete: SetNull)
+  
+  issueType           String
+  // "zero_price", "broken_handle", "uncategorized", "missing_brand", "missing_image", 
+  // "duplicate_sku", "missing_metadata", "pdp_404", "missing_spec", "missing_description",
+  // "wrong_category", "map_violation", "msrp_violation", "orphaned_product", "missing_tags",
+  // "missing_seo", "missing_compare_at", "inventory_discrepancy", "eol_mismatch"
+  
+  severity            String   // "critical", "high", "medium", "low", "info"
+  description         String
+  details             String?  // JSON of additional details
+  
+  suggestedAction     String   // "delete", "draft", "update_price", "fix_handle", "add_category", "add_brand", "add_image", "merge_sku", "add_metadata", "add_spec", "fix_eol", "redirect", "ignore"
+  actionParameters    String?  // JSON of parameters for the suggested action
+  
+  status              String   @default("open") // "open", "in_progress", "fixed", "ignored", "auto_fixed"
+  
+  // Resolution tracking
+  fixedBy             String?
+  fixedAt             DateTime?
+  fixMethod           String?  // "manual", "auto", "batch"
+  fixResult           String?  // "success", "failed", "partial"
+  fixError            String?
+  
+  createdAt           DateTime @default(now())
+  updatedAt           DateTime @updatedAt
+
+  @@index([shopifyProductId])
+  @@index([vendorProductId])
+  @@index([issueType])
+  @@index([severity])
+  @@index([status])
+  @@index([suggestedAction])
+  @@map("health_issues")
+}
+
+// ──────────────────────────────────────────────
+// PRICING & MARGIN
+// ──────────────────────────────────────────────
+
+model PriceRule {
+  id             String   @id @default(cuid())
+  name           String
+  description    String?
+  
+  // Rule scope
+  vendorId       String?
+  category       String?
+  subcategory    String?
+  productId      String?
+  sku            String?
+  
+  // Rule definition
+  ruleType       String   // "margin_percentage", "fixed_markup", "map_compliance", "msrp_match", "cost_plus", "liquidation", "clearance"
+  ruleValue      Decimal  @db.Decimal(10, 4)
+  
+  // Constraints
+  minPrice       Decimal? @db.Decimal(10, 2)
+  maxPrice       Decimal? @db.Decimal(10, 2)
+  mapFloor       Decimal? @db.Decimal(10, 2)
+  
+  // Schedule
+  effectiveFrom  DateTime @default(now())
+  effectiveTo    DateTime?
+  isActive       Boolean  @default(true)
+  priority       Int      @default(0)
+  
+  createdAt      DateTime @default(now())
+  updatedAt      DateTime @updatedAt
+
+  @@index([vendorId])
+  @@index([category])
+  @@index([productId])
+  @@index([isActive])
+  @@index([priority])
+  @@map("price_rules")
+}
+
+model PriceHistory {
+  id             String   @id @default(cuid())
+  vendorProductId String?
+  shopifyProductId String?
+  
+  oldPrice       Decimal? @db.Decimal(10, 2)
+  newPrice       Decimal  @db.Decimal(10, 2)
+  oldCompareAt   Decimal? @db.Decimal(10, 2)
+  newCompareAt   Decimal? @db.Decimal(10, 2)
+  
+  oldMapPrice    Decimal? @db.Decimal(10, 2)
+  newMapPrice    Decimal? @db.Decimal(10, 2)
+  oldMsrp        Decimal? @db.Decimal(10, 2)
+  newMsrp        Decimal? @db.Decimal(10, 2)
+  
+  changeReason   String?  // "vendor_pricebook", "map_compliance", "competitor_adjustment", "manual", "margin_rule", "clearance", "liquidation"
+  changedBy      String?  // User ID or "system"
+  
+  createdAt      DateTime @default(now())
+
+  @@index([vendorProductId])
+  @@index([shopifyProductId])
+  @@index([createdAt])
+  @@map("price_history")
+}
+
+// ──────────────────────────────────────────────
+// AUDIT LOG
+// ──────────────────────────────────────────────
+
+model AuditLog {
+  id             String   @id @default(cuid())
+  userId         String
+  userEmail      String?
+  userRole       String?
+  
+  action         String   // "price_change", "eol_override", "vendor_import", "product_delete", "spec_upload", "eol_apply", "health_fix", "report_generate", "config_change", "user_login", "user_logout", "backup", "restore"
+  entityType     String   // "product", "vendor", "pricebook", "eol_mapping", "health_issue", "spec", "config", "user", "report"
+  entityId       String
+  
+  oldValue       String?  // JSON of previous state
+  newValue       String?  // JSON of new state
+  
+  ipAddress      String?
+  userAgent      String?
+  
+  // For batch operations
+  batchId        String?
+  batchSize      Int?
+  batchSuccess   Int?
+  batchFailed    Int?
+  
+  createdAt      DateTime @default(now())
+
+  @@index([userId])
+  @@index([action])
+  @@index([entityType])
+  @@index([entityId])
+  @@index([createdAt])
+  @@map("audit_logs")
+}
+
+// ──────────────────────────────────────────────
+// USER & RBAC (Enterprise)
+// ──────────────────────────────────────────────
+
+model User {
+  id             String   @id @default(cuid())
+  email          String   @unique
+  name           String?
+  
+  // Authentication
+  passwordHash   String?  // For local auth (not used with SSO)
+  authProvider   String   @default("local") // "local", "shopify", "saml", "oidc", "ldap"
+  authProviderId String?
+  
+  // Role-based access
+  role           String   @default("admin") // "admin", "pricing_manager", "content_manager", "viewer", "vendor_manager", "health_manager"
+  
+  // Permissions (override role defaults)
+  permissions    String?  // JSON array of explicit permissions
+  
+  // Status
+  isActive       Boolean  @default(true)
+  isVerified     Boolean  @default(false)
+  
+  // Login tracking
+  lastLoginAt    DateTime?
+  lastLoginIp    String?
+  loginCount     Int      @default(0)
+  failedLogins   Int      @default(0)
+  lockedUntil    DateTime?
+  
+  // Session
+  sessions       UserSession[]
+  
+  // Preferences
+  preferences    String?  // JSON of user preferences
+  
+  createdAt      DateTime @default(now())
+  updatedAt      DateTime @updatedAt
+
+  @@index([email])
+  @@index([role])
+  @@index([isActive])
+  @@map("users")
+}
+
+model UserSession {
+  id             String   @id @default(cuid())
+  userId         String
+  user           User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  
+  token          String   @unique
+  expiresAt      DateTime
+  
+  ipAddress      String?
+  userAgent      String?
+  
+  lastActivityAt DateTime @default(now())
+  createdAt      DateTime @default(now())
+
+  @@index([userId])
+  @@index([token])
+  @@index([expiresAt])
+  @@map("user_sessions")
+}
+
+model Role {
+  id             String   @id @default(cuid())
+  name           String   @unique // "admin", "pricing_manager", "content_manager", "viewer"
+  displayName    String
+  description    String?
+  
+  permissions    String   // JSON array of permissions
+  
+  isSystem       Boolean  @default(false) // System roles cannot be deleted
+  isActive       Boolean  @default(true)
+  
+  createdAt      DateTime @default(now())
+  updatedAt      DateTime @updatedAt
+
+  @@index([name])
+  @@map("roles")
+}
+
+// ──────────────────────────────────────────────
+// SETTINGS & CONFIG
+// ──────────────────────────────────────────────
+
+model AppConfig {
+  id             String   @id @default(cuid())
+  key            String   @unique
+  value          String
+  category       String   // "airgap", "pricing", "eol", "general", "vendor", "theme", "cron", "notification"
+  description    String?
+  isEncrypted    Boolean  @default(false)
+  isEditable     Boolean  @default(true)
+  
+  // For complex values
+  dataType       String   @default("string") // "string", "number", "boolean", "json", "array"
+  
+  createdAt      DateTime @default(now())
+  updatedAt      DateTime @updatedAt
+
+  @@index([key])
+  @@index([category])
+  @@map("app_config")
+}
+
+// ──────────────────────────────────────────────
+// REPORTS & ANALYTICS
+// ──────────────────────────────────────────────
+
+model Report {
+  id             String   @id @default(cuid())
+  name           String
+  description    String?
+  
+  reportType     String   // "pricing_audit", "eol_audit", "catalog_health", "competitor_gap", "vendor_sync", "margin_analysis", "inventory_report", "custom"
+  
+  // Filter parameters
+  parameters     String?  // JSON of report parameters
+  
+  // Output
+  filePath       String?
+  fileName       String?
+  fileSize       Int?
+  mimeType       String?
+  
+  // Status
+  status         String   @default("pending") // "pending", "running", "completed", "failed"
+  errorMessage   String?
+  
+  // Scheduling
+  isScheduled    Boolean  @default(false)
+  schedule       String?  // Cron expression
+  lastRunAt      DateTime?
+  nextRunAt      DateTime?
+  runCount       Int      @default(0)
+  
+  generatedBy    String?
+  createdAt      DateTime @default(now())
+  updatedAt      DateTime @updatedAt
+
+  @@index([reportType])
+  @@index([status])
+  @@index([isScheduled])
+  @@index([createdAt])
+  @@map("reports")
+}
+
+model AnalyticsSnapshot {
+  id             String   @id @default(cuid())
+  snapshotType   String   // "catalog_health", "pricing_overview", "eol_status", "competitor_summary", "vendor_summary"
+  
+  // Metrics (JSON)
+  metrics        String
+  
+  // Aggregations
+  productCount   Int?
+  vendorCount    Int?
+  eolProductCount Int?
+  healthScore    Int?
+  averageMargin  Decimal? @db.Decimal(10, 4)
+  mapViolationCount Int?
+  competitorGapCount Int?
+  
+  createdAt      DateTime @default(now())
+
+  @@index([snapshotType])
+  @@index([createdAt])
+  @@map("analytics_snapshots")
+}
+
+// ──────────────────────────────────────────────
+// THEME EXTENSIONS
+// ──────────────────────────────────────────────
+
+model ThemeExtension {
+  id             String   @id @default(cuid())
+  name           String   // "eol-banner", "comparison-table", "urgency-badges", "spec-sheet-button", "cross-sell-carousel"
+  displayName    String
+  description    String?
+  
+  version        String   @default("1.0.0")
+  isActive       Boolean  @default(true)
+  isInstalled    Boolean  @default(false)
+  
+  // Shopify theme extension settings
+  extensionType  String   // "block", "theme"
+  blockType      String?  // "@shopify/block", "@shopify/theme"
+  
+  // Configuration
+  configSchema   String?  // JSON schema for extension config
+  defaultConfig  String?  // JSON of default config
+  
+  // Deployment
+  lastDeployedAt DateTime?
+  deploymentStatus String? // "pending", "success", "failed"
+  deploymentError String?
+  
+  createdAt      DateTime @default(now())
+  updatedAt      DateTime @updatedAt
+
+  @@index([name])
+  @@index([isActive])
+  @@map("theme_extensions")
+}
+
+// ──────────────────────────────────────────────
+// NOTIFICATIONS
+// ──────────────────────────────────────────────
+
+model Notification {
+  id             String   @id @default(cuid())
+  userId         String?
+  
+  type           String   // "price_alert", "eol_detected", "health_issue", "competitor_alert", "vendor_sync", "system", "report_ready"
+  severity       String   // "info", "warning", "error", "success"
+  
+  title          String
+  message        String
+  details        String?  // JSON of additional details
+  
+  // Action
+  actionUrl      String?
+  actionLabel    String?
+  
+  // Status
+  isRead         Boolean  @default(false)
+  readAt         DateTime?
+  
+  // Delivery
+  deliveredVia   String?  // "in_app", "email", "webhook"
+  deliveryStatus String?  // "pending", "sent", "failed"
+  
+  createdAt      DateTime @default(now())
+
+  @@index([userId])
+  @@index([type])
+  @@index([severity])
+  @@index([isRead])
+  @@index([createdAt])
+  @@map("notifications")
+}
