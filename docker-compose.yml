@@ -1,0 +1,137 @@
+version: '3.8'
+
+services:
+  # ───────────────────────────────────────
+  # PES Engine (default: SQLite)
+  # ───────────────────────────────────────
+  pes-engine:
+    build:
+      context: .
+      dockerfile: Dockerfile
+      target: production
+    container_name: pes-engine
+    restart: unless-stopped
+    ports:
+      - "3000:3000"
+    env_file:
+      - .env
+    volumes:
+      - pes-data:/app/data
+      - pes-uploads:/app/data/uploads
+      - pes-specs:/app/data/specs
+      - pes-logs:/app/data/logs
+      - pes-backups:/app/data/backups
+    networks:
+      - pes-network
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:3000/health"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 30s
+    depends_on:
+      - postgres
+        condition: service_healthy
+      profiles:
+        - enterprise
+
+  # ───────────────────────────────────────
+  # PostgreSQL (enterprise mode)
+  # ───────────────────────────────────────
+  postgres:
+    image: postgres:16-alpine
+    container_name: pes-postgres
+    restart: unless-stopped
+    profiles:
+      - enterprise
+    environment:
+      POSTGRES_USER: ${DB_USER:-pes}
+      POSTGRES_PASSWORD: ${DB_PASSWORD:-changeme}
+      POSTGRES_DB: ${DB_NAME:-pes_engine}
+    volumes:
+      - pes-postgres:/var/lib/postgresql/data
+    networks:
+      - pes-network
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U ${DB_USER:-pes} -d ${DB_NAME:-pes_engine}"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  # ───────────────────────────────────────
+  # Redis (enterprise mode)
+  # ───────────────────────────────────────
+  redis:
+    image: redis:7-alpine
+    container_name: pes-redis
+    restart: unless-stopped
+    profiles:
+      - enterprise
+    volumes:
+      - pes-redis:/data
+    networks:
+      - pes-network
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+      interval: 10s
+      timeout: 3s
+      retries: 5
+
+  # ───────────────────────────────────────
+  # nginx (production mode)
+  # ───────────────────────────────────────
+  nginx:
+    image: nginx:alpine
+    container_name: pes-nginx
+    restart: unless-stopped
+    profiles:
+      - production
+      - enterprise
+    ports:
+      - "80:80"
+      - "443:443"
+    volumes:
+      - ./nginx/nginx.conf:/etc/nginx/nginx.conf:ro
+      - pes-nginx-ssl:/etc/nginx/ssl:ro
+    networks:
+      - pes-network
+    depends_on:
+      - pes-engine
+
+  # ───────────────────────────────────────
+  # Backup service (enterprise mode)
+  # ───────────────────────────────────────
+  backup:
+    build:
+      context: ./scripts/backup
+      dockerfile: Dockerfile.backup
+    container_name: pes-backup
+    restart: unless-stopped
+    profiles:
+      - enterprise
+    environment:
+      DATABASE_PROVIDER: ${DATABASE_PROVIDER:-sqlite}
+      SQLITE_DB_PATH: /app/data/pes-engine.db
+      BACKUP_PATH: /backups
+      BACKUP_RETENTION_DAYS: ${BACKUP_RETENTION_DAYS:-30}
+    volumes:
+      - pes-data:/app/data
+      - pes-backups:/backups
+    networks:
+      - pes-network
+    depends_on:
+      - pes-engine
+
+volumes:
+  pes-data:
+  pes-uploads:
+  pes-specs:
+  pes-logs:
+  pes-backups:
+  pes-postgres:
+  pes-redis:
+  pes-nginx-ssl:
+
+networks:
+  pes-network:
+    driver: bridge
